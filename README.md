@@ -6,6 +6,23 @@ Describe a health concern in plain language. The app removes identifying details
 
 CMU 24-679 Project 1
 
+## User flow
+
+```mermaid
+flowchart LR
+    A([Student types a concern<br/>in plain language]) --> B{Red-flag<br/>rules}
+    B -- emergency --> E[["Seek emergency care now"]]
+    B -- no flag --> C[Redact personal details]
+    C --> D[/Student checks what<br/>was removed/]
+    D --> F[Top-3 specialties<br/>with confidence]
+    F --> G[Short reason +<br/>questions to bring]
+    G --> H([Student books a visit<br/>outside the app])
+    classDef stop fill:#fbe9e6,stroke:#c0392b,color:#c0392b
+    class E stop
+```
+
+"Start with a GP" is always one of the options shown. Nothing the student types is stored.
+
 ## Pipeline
 
 1. **Red-flag check**: written rules; emergencies go straight to "Seek emergency care now"
