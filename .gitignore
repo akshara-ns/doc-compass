@@ -1,5 +1,6 @@
 # Post text and downloaded datasets stay local (see README data rules)
-data/
+data/**
+!data/**/
 !data/**/*.labels.csv
 
 # Models and checkpoints
