@@ -23,6 +23,10 @@ flowchart LR
 
 "Start with a GP" is always one of the options shown. Nothing the student types is stored.
 
+## Check-in figure
+
+The full system (user, models, data and open questions) as of the 27 Sep check-in: [`docs/checkin/checkin_figure.png`](docs/checkin/checkin_figure.png) ([PDF](docs/checkin/checkin_figure.pdf)). Regenerate it with `python3 docs/checkin/build_figure.py`.
+
 ## Pipeline
 
 1. **Red-flag check**: written rules; emergencies go straight to "Seek emergency care now"
