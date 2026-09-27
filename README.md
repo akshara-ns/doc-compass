@@ -1,4 +1,6 @@
-# Which Doctor Do I Book?
+# Doc Compass
+
+*Which doctor do I book?*
 
 Describe a health concern in plain language. The app removes identifying details, checks for emergency symptoms, and suggests which kind of doctor to book (top 3, with "Start with a GP" as an option). It routes; it does not diagnose.
 
