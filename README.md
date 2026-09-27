@@ -25,7 +25,7 @@ flowchart LR
 
 ## Check-in figure
 
-The full system (user, models, data and open questions) as of the 27 Sep check-in: [`docs/checkin/checkin_figure.png`](docs/checkin/checkin_figure.png) ([PDF](docs/checkin/checkin_figure.pdf)). Regenerate it with `python3 docs/checkin/build_figure.py`.
+The full system (user, models, data and open questions) as of the 27 Sep check-in: [`docs/checkin/checkin_figure.png`](docs/checkin/checkin_figure.png) ([PDF](docs/checkin/checkin_figure.pdf)). To edit it, change `docs/checkin/build_figure.py` and run it; it writes an HTML page you can screenshot or print to PDF.
 
 ## Pipeline
 
