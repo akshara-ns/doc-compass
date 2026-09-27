@@ -21,4 +21,4 @@ Deployed as a Gradio app on a ZeroGPU Hugging Face Space (link to come).
 - Keep synthetic data in `data/synthetic/`, separate from our manual labels.
 - Keep API keys and tokens out of the repo.
 
-The full plan lives in `../which-doctor-do-i-book.md`.
+The full plan lives in `../doc-compass-plan.md`.
