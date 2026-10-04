@@ -2,6 +2,7 @@
 data/**
 !data/**/
 !data/**/*.labels.csv
+!data/**/*.ids.csv
 
 # Models and checkpoints
 checkpoints/
