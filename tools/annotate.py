@@ -18,7 +18,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from doccompass import paths
 from doccompass.labels import ANNOTATION_CHOICES, EMERGENCY, LABELS, SKIP, URGENCY
 
-COLUMNS = ["id", "part", "annotator", "primary", "alternate", "urgency", "ambiguous"]
+COLUMNS = ["id", "part", "annotator", "primary", "alternate", "urgency", "ambiguous", "draft_primary", "changed_from_draft"]
 NO_ALTERNATE = "(none)"
 
 
@@ -54,16 +54,16 @@ def build(annotator: str) -> gr.Blocks:
         header = f"**Post {position + 1} of {len(queue)}** · {post['part']} · {done} labelled"
         if post["id"] in labels:  # revisiting: show what was saved
             row = labels[post["id"]]
-            values = (row["primary"], row["alternate"] or NO_ALTERNATE, row["urgency"] or URGENCY[0], row["ambiguous"] == "True")
+            values = (row["primary"], row["alternate"] or NO_ALTERNATE, row["urgency"] or None, row["ambiguous"] == "True")
             header += " · already saved"
         elif post["part"] != "test" and isinstance(post.get("draft_primary"), str):
             alternate = post.get("draft_alternate")
             urgency = post.get("draft_urgency")
             values = (post["draft_primary"], alternate if isinstance(alternate, str) else NO_ALTERNATE,
-                      urgency if isinstance(urgency, str) else URGENCY[0], False)
+                      urgency if isinstance(urgency, str) else None, False)
             header += f" · first pass: {post['draft_primary']}"
-        else:  # test posts are labelled with nothing pre-selected
-            values = (None, NO_ALTERNATE, URGENCY[0], False)
+        else:  # test posts are labelled with nothing pre-selected, urgency included
+            values = (None, NO_ALTERNATE, None, False)
         return (position, header, post["text"], *values, message)
 
     def save(position: int, primary, alternate, urgency, ambiguous):
@@ -71,11 +71,17 @@ def build(annotator: str) -> gr.Blocks:
             return show(position, "Pick a primary label first.")
         post = queue.iloc[position]
         is_routed = primary in LABELS
+        if is_routed and urgency is None:
+            return show(position, "Pick an urgency too.")
+        # Keep the first-pass label that was shown, so we can report how often we changed it.
+        draft = post.get("draft_primary") if post["part"] != "test" else None
+        draft = draft if isinstance(draft, str) else ""
         labels[post["id"]] = {
             "id": post["id"], "part": post["part"], "annotator": annotator, "primary": primary,
             "alternate": alternate if is_routed and alternate not in (NO_ALTERNATE, primary) else "",
             "urgency": "emergency" if primary == EMERGENCY else (urgency if is_routed else ""),
             "ambiguous": str(bool(ambiguous and primary != SKIP)),
+            "draft_primary": draft, "changed_from_draft": str(draft != "" and primary != draft),
         }
         out_path.parent.mkdir(parents=True, exist_ok=True)
         pd.DataFrame(labels.values(), columns=COLUMNS).to_csv(out_path, index=False)
@@ -93,7 +99,7 @@ def build(annotator: str) -> gr.Blocks:
         primary = gr.Radio(ANNOTATION_CHOICES, label="Which kind of doctor should this person book?")
         with gr.Row():
             alternate = gr.Dropdown([NO_ALTERNATE] + LABELS, value=NO_ALTERNATE, label="Also acceptable (optional)")
-            urgency = gr.Radio(URGENCY, value=URGENCY[0], label="Urgency")
+            urgency = gr.Radio(URGENCY, label="Urgency")
             ambiguous = gr.Checkbox(label="Ambiguous: I couldn't really decide")
         with gr.Row():
             back_button = gr.Button("Back")
