@@ -10,7 +10,6 @@ import sys
 from pathlib import Path
 
 import pandas as pd
-from sklearn.model_selection import train_test_split
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
@@ -18,13 +17,12 @@ from doccompass import paths
 from doccompass.labels import LABEL2ID, LABELS
 from doccompass.metrics import describe, score
 from doccompass.router import TfidfRouter
-
-SEED = 24679
+from doccompass.splits import public_split
 
 
 def main() -> None:
-    comments = pd.read_csv(paths.PATIENT_COMMENTS)
-    train, held_out = train_test_split(comments, test_size=0.15, stratify=comments["label"], random_state=SEED)
+    train_part, val_part, held_out = public_split()
+    train = pd.concat([train_part, val_part])  # nothing to tune here, so val is training data too
 
     router = TfidfRouter().fit(train["text"], train["label"])
     held_ids = held_out["label"].map(LABEL2ID).to_numpy()
@@ -37,6 +35,7 @@ def main() -> None:
     print(per_label.groupby("label")["correct"].agg(["size", "mean"]).reindex(LABELS).round(2).to_string())
 
     # The saved model uses every public comment.
+    comments = pd.concat([train, held_out])
     TfidfRouter().fit(comments["text"], comments["label"]).save(paths.MODELS / "tfidf_stage1.joblib")
     print("Saved checkpoints/tfidf_stage1.joblib")
 

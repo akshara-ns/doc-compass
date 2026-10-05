@@ -17,3 +17,6 @@ __pycache__/
 # Secrets and OS files
 .env
 .DS_Store
+
+working-log.md
+proj.txt

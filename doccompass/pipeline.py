@@ -4,11 +4,13 @@ route_concern always returns the same keys, whatever happens, so the interface n
 to guess what it received.
 """
 
+import os
+
 from .explain import headline, template_explanation
 from .labels import GP, LABELS
 from .paths import MODELS
 from .redflags import emergency_message, find_flags
-from .router import TfidfRouter
+from .router import EncoderRouter, TfidfRouter
 from .scrub import scrub
 
 # Provisional cutoffs for the "unsure" state; tuned on the dev split once our labels exist.
@@ -17,17 +19,32 @@ MARGIN = 0.15  # top two closer than this is unsure
 MIN_WORDS, MAX_CHARS = 3, 6000
 
 
-def load_router():
-    """The best router available on disk, or None if nothing has been trained yet."""
-    for name in ("tfidf_stage2.joblib", "tfidf_stage1.joblib"):
-        if (MODELS / name).exists():
-            return TfidfRouter.load(MODELS / name)
+# Tried in order; stage 2 (trained on our posts) beats stage 1 (public data only).
+ROUTER_ORDER = ["distilroberta_stage2", "biomedbert_stage2", "tfidf_stage2",
+                "distilroberta_stage1", "biomedbert_stage1", "tfidf_stage1"]
+
+
+def load_router(name: str | None = None):
+    """The first router that loads, or None if nothing has been trained yet.
+
+    Pass a name, or set DOCCOMPASS_ROUTER, to pick one. A fine-tuned router that fails to
+    load (for example PyTorch isn't installed) is skipped in favour of the next one.
+    """
+    name = name or os.environ.get("DOCCOMPASS_ROUTER")
+    for candidate in [name] if name else ROUTER_ORDER:
+        try:
+            if (MODELS / candidate).is_dir():
+                return EncoderRouter(MODELS / candidate)
+            if (MODELS / f"{candidate}.joblib").exists():
+                return TfidfRouter.load(MODELS / f"{candidate}.joblib")
+        except Exception:
+            continue
     return None
 
 
-def route_concern(text: str, router) -> dict:
+def route_concern(text: str, router, explainer=None) -> dict:
     result = {"status": "invalid", "message": "", "flags": [], "text": "", "removed": [],
-              "options": [], "unsure": False, "evidence": [], "headline": "", "explanation": ""}
+              "options": [], "unsure": False, "evidence": [], "headline": "", "explanation": "", "explained_by": ""}
     text = (text or "").strip()
     if len(text.split()) < MIN_WORDS:
         result["message"] = "Describe what you are feeling in a sentence or two, and we'll suggest a kind of doctor."
@@ -59,7 +76,15 @@ def route_concern(text: str, router) -> dict:
         if hasattr(router, "evidence") and best != GP and not result["unsure"]:
             result["evidence"] = router.evidence(result["text"], best)
 
-    # 4. Explain, from the record above and nothing else.
+    # 4. Explain, from the record above and nothing else. The template is the fallback
+    #    whenever the language model is absent, fails, or writes something that fails its checks.
     result["headline"] = headline(result)
-    result["explanation"] = template_explanation(result)
+    result["explanation"], result["explained_by"] = template_explanation(result), "template"
+    if explainer is not None and router is not None:
+        try:
+            generated = explainer(result)
+        except Exception:
+            generated = None
+        if generated:
+            result["explanation"], result["explained_by"] = generated, explainer.name
     return result

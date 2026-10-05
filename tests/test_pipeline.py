@@ -3,12 +3,13 @@
 import numpy as np
 import pytest
 
+from doccompass.explain import check_generated
 from doccompass.labels import GP, LABELS
 from doccompass.pipeline import route_concern
 from doccompass.redflags import find_flags
 from doccompass.scrub import scrub
 
-KEYS = {"status", "message", "flags", "text", "removed", "options", "unsure", "evidence", "headline", "explanation"}
+KEYS = {"status", "message", "flags", "text", "removed", "options", "unsure", "evidence", "headline", "explanation", "explained_by"}
 
 
 class FixedRouter:
@@ -89,3 +90,40 @@ def test_unsure_with_gp_leads_with_gp():
 def test_no_router_falls_back_to_gp():
     result = route_concern("itchy rash on my arm for weeks", None)
     assert result["options"][0]["label"] == GP and result["explanation"]
+
+
+GOOD = {"why": "You described an itchy rash on your arm, and Dermatology looks after skin, hair and nails.",
+        "questions": ["When did the rash start?", "Has it spread?", "Have you tried any creams?"]}
+
+
+@pytest.mark.parametrize("change", [
+    {"why": "This sounds like eczema, so see a skin doctor soon."},
+    {"why": "You described a sore knee, which is consistent with a ligament tear, and Orthopedics looks after joints."},
+    {"why": "You described a rash, and a cardiologist looks after skin, hair and nails."},
+    {"why": "You described a rash for 3 weeks, and Dermatology looks after skin."},
+    {"questions": ["Should you take 200 mg of ibuprofen?"]},
+    {"questions": ["When did it start"]},
+    {"questions": ["Have you tried antihistamines or steroids?", "When did it start?"]},
+])
+def test_generated_explanation_is_rejected(change):
+    assert check_generated({**GOOD, **change}, ["Dermatology"])
+
+
+def test_generated_explanation_checks():
+    assert check_generated(GOOD, ["Dermatology"]) == []
+    assert check_generated("not json", ["Dermatology"])
+    neurology = {"why": "You described headaches every afternoon, and Neurology looks after headaches, numbness and memory.",
+                 "questions": ["How long do they last?", "What helps?"]}
+    assert check_generated(neurology, ["Neurology"]) == []  # "Neurology" must not read as "Urology"
+    assert check_generated({**GOOD, "questions": ["Do you take any medicines or supplements?", "When did it start?"]}, ["Dermatology"]) == []
+
+
+def test_failed_explainer_falls_back_to_template():
+    class Broken:
+        name = "broken"
+
+        def __call__(self, record):
+            raise RuntimeError("model unavailable")
+
+    result = route_concern("itchy rash on my arm for weeks", confident(), Broken())
+    assert result["explained_by"] == "template" and result["explanation"]

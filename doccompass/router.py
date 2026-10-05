@@ -62,3 +62,29 @@ class TfidfRouter:
         router = cls()
         router.pipeline = joblib.load(path)
         return router
+
+
+class EncoderRouter:
+    """A fine-tuned encoder router, loaded from a folder written by scripts/train_encoder.py."""
+
+    def __init__(self, folder: Path, max_length: int = 512, batch_size: int = 32):
+        import torch  # imported here so the from-scratch router works without PyTorch installed
+        from transformers import AutoModelForSequenceClassification, AutoTokenizer
+
+        self.torch = torch
+        self.device = "cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu"
+        self.tokenizer = AutoTokenizer.from_pretrained(folder)
+        self.model = AutoModelForSequenceClassification.from_pretrained(folder).to(self.device).eval()
+        if [self.model.config.id2label[i] for i in range(len(LABELS))] != LABELS:
+            raise ValueError(f"{folder} was trained with a different label list.")
+        self.max_length, self.batch_size = max_length, batch_size
+
+    def predict_proba(self, texts) -> np.ndarray:
+        texts = list(texts)
+        chunks = []
+        with self.torch.inference_mode():
+            for start in range(0, len(texts), self.batch_size):
+                batch = self.tokenizer(texts[start:start + self.batch_size], truncation=True, max_length=self.max_length,
+                                       padding=True, return_tensors="pt").to(self.device)
+                chunks.append(self.torch.softmax(self.model(**batch).logits, dim=-1).float().cpu().numpy())
+        return np.concatenate(chunks)
