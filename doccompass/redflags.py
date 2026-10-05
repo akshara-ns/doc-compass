@@ -32,9 +32,10 @@ _CANT = r"(?:can'?t|cannot|can not|unable to|couldn'?t)"
 
 RULES = [
     _rule("chest pain", "Chest pain or discomfort lasting for two minutes or more", MEDLINEPLUS,
-          r"\bchest (?:pain|pressure|tightness|discomfort)\b|\bpain in (?:my|the|his|her) chest\b"),
+          r"\bchest (?:pain|pressure|tightness|discomfort)\b|\bpain in (?:my|the|his|her) chest\b"
+          r"|\bchest (?:hurts|is hurting|feels tight|feels heavy)\b"),
     _rule("breathing", "Breathing problems (difficulty breathing, shortness of breath)", MEDLINEPLUS,
-          rf"\b(?:{_CANT}|struggling to|hard to|trouble|difficulty) breath(?:e|ing)\b|\bshort(?:ness)? of breath\b|\bgasping for (?:air|breath)\b"),
+          rf"\b(?:{_CANT}|can barely|barely able to|struggling to|hard to|trouble|difficulty) breath(?:e|ing)\b|\bshort(?:ness)? of breath\b|\bgasping for (?:air|breath)\b"),
     _rule("stroke signs", "Sudden numbness or weakness in the face, arm, or leg; sudden confusion or trouble speaking", CDC_STROKE,
           rf"\bface (?:is |was )?drooping\b|\bslurred speech\b|\b(?:{_CANT}|trouble) (?:speak|speaking|talk|talking)\b"
           r"|\bsudden(?:ly)? (?:numb|weak|confus)\w*|\b(?:numb|weak)\w* on (?:one|the left|the right|my left|my right) side\b"),
@@ -44,7 +45,8 @@ RULES = [
     _rule("loss of consciousness", "Fainting or loss of consciousness", MEDLINEPLUS,
           r"\b(?:passed out|fainted|lost consciousness|unconscious|unresponsive)\b"),
     _rule("suicidal thoughts", "Feeling of committing suicide or murder", MEDLINEPLUS,
-          r"\bsuicid\w*|\bkill(?:ing)? myself\b|\bend(?:ing)? my (?:own )?life\b|\bwant(?:ed)? to die\b|\bdon'?t want to (?:live|be alive)\b"),
+          r"\bsuicid\w*|\bkill(?:ing)? myself\b|\bend(?:ing)? my (?:own )?life\b|\bwant(?:ed)? to die\b|\bdon'?t want to (?:live|be alive)\b"
+          r"|\bend(?:ing)? it all\b|\btake my (?:own )?life\b"),
     _rule("face or throat swelling", "Swelling of the face, eyes, or tongue", MEDLINEPLUS,
           r"\b(?:throat|tongue|lips?|face) (?:is |are |was |were )?(?:swelling|swollen|closing)\b"
           r"|\bswelling (?:of|in) (?:my |the )?(?:face|tongue|throat|lips?)\b|\banaphyla\w*"),
@@ -54,13 +56,18 @@ RULES = [
           r"\boverdos\w*|(?<!food )\bpoison(?:ed|ing)\b|\b(?:swallowed|drank|ingested) (?:bleach|poison|detergent|antifreeze)\b"),
     _rule("sudden severe pain", "Sudden, severe pain anywhere in the body; sudden severe headache with no known cause", MEDLINEPLUS,
           r"\bsudden(?:ly)?\b[^.!?]{0,40}\b(?:severe|excruciating|unbearable|worst)\b[^.!?]{0,25}\b(?:pain|headache)\b"
-          r"|\bworst (?:headache|pain) of my life\b"),
+          r"|\bworst (?:headache|pain) (?:of my life|ever)\b"),
     _rule("sudden vision change", "Sudden trouble seeing", CDC_STROKE,
           rf"\bsudden(?:ly)? (?:lost|loss of|blurred|blurry|double) vision\b|\bsuddenly {_CANT} see\b|\bsudden(?:ly)? (?:went )?blind\b"),
 ]
 
-# A match is ignored when one of these appears just before it ("no chest pain").
-_NEGATION = re.compile(r"\b(?:no|not|never|without|denies|deny|didn'?t|don'?t have|doesn'?t have|haven'?t)\b[^.!?,;]{0,25}$", re.IGNORECASE)
+# A match is ignored when a negation governs it: "no chest pain", "I don't want to die",
+# "never had any trouble breathing". Only short filler words may sit between the two, so
+# "not sure why my chest pain started" and "I don't know why but my chest hurts" still flag.
+_NEGATION = re.compile(
+    r"\b(?:no|not|never|without|denies|deny|didn'?t|don'?t|doesn'?t|haven'?t|hasn'?t|isn'?t|wasn'?t)"
+    r"(?:\s+(?:have|had|has|having|got|get|getting|any|a|an|the|real|really|much|more|been|"
+    r"experienced|experiencing|feel|felt|noticed|want|wanted|to|this|that|such)){0,4}\s*$", re.IGNORECASE)
 
 
 def find_flags(text: str) -> list[dict]:
@@ -68,7 +75,7 @@ def find_flags(text: str) -> list[dict]:
     flags = []
     for rule in RULES:
         for match in rule.pattern.finditer(text):
-            if _NEGATION.search(text[max(0, match.start() - 40):match.start()]):
+            if _NEGATION.search(text[max(0, match.start() - 60):match.start()]):
                 continue
             flags.append({"rule": rule.name, "matched": match.group(0), "sign": rule.sign,
                           "source": rule.source[0], "url": rule.source[1]})

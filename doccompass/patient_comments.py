@@ -2,6 +2,8 @@
 
 Source: Mendeley Data, DOI 10.17632/2twgjzpn82.2, CC BY 4.0. Each comment has a symptom
 category; CATEGORY_MAP sends each category to one of our labels, or drops it.
+
+We use it for stage-1 training only; it is never the test set.
 See docs/label-set.md for the reasoning behind each choice.
 """
 

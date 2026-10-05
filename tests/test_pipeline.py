@@ -42,6 +42,13 @@ def torn():
     "my tongue is swelling after eating peanuts",
     "he passed out and hit his head",
     "I took an overdose of my pills",
+    "my chest hurts really badly",
+    "I can barely breathe",
+    "thoughts of ending it all",
+    "worst headache ever, came on suddenly",
+    "I don't want to live anymore",
+    "I don't know why but I have chest pain",
+    "not sure why my chest pain started an hour ago",
 ])
 def test_emergencies_are_flagged(text):
     assert find_flags(text)
@@ -53,6 +60,9 @@ def test_emergencies_are_flagged(text):
     "no chest pain, just a sore knee after running",
     "I think I had food poisoning last week and my stomach is still off",
     "my tooth hurts when I drink something cold",
+    "I don't want to die from this, should I see a dermatologist",
+    "I have never had chest pain, only a sore shoulder",
+    "there was no shortness of breath, just a cough",
 ])
 def test_ordinary_concerns_are_not_flagged(text):
     assert not find_flags(text)
