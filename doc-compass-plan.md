@@ -8,7 +8,7 @@ A specialist router. Describe a health concern in plain language and get told wh
 |---|---|
 | Team | Akshara (`akshara-ns`) and Sohum (`ssg1`) |
 | Deadlines | Presentation 5 Oct 2026; code and report 8 Oct 2026 |
-| GUI | Gradio app. Where it's hosted is decided later (Gradio Spaces on Hugging Face now need a paid plan) |
+| GUI | Gradio app, run from a Colab notebook that prints a public link and QR code (Gradio Spaces on Hugging Face now need a paid plan). Code and models: `ssg1/doc-compass` on Hugging Face |
 | Model types | All three: from scratch, fine-tuned, off-the-shelf (the brief asks for at least two) |
 | Focus | Routing. Redaction is out of scope for now: we assume users type relevant, non-identifying text. A simple rule-based scrub may be added for completeness, and full redaction later if time allows |
 | Manual data | 600 labelled posts (400 train / 50 dev / 150 test) |
@@ -17,24 +17,48 @@ A specialist router. Describe a health concern in plain language and get told wh
 | Annotation effort | ≈ 7 person-hours across both of us; 60 of the 150 test posts are labelled by both of us for Cohen's κ |
 | Completion estimate | ≈ 65% with this scope (the v1 scope was ≈ 25% in one week) |
 
-Current figure: `docs/checkin/checkin_figure_v3.png` (4 Oct). The 27 Sep check-in figure, `docs/checkin/checkin_figure.png`, is kept as it was. Label set and public-data mapping, for approval: `docs/label-set.md`.
+Current figure: `docs/checkin/checkin_figure_v3.png` (4 Oct). The 27 Sep check-in figure, `docs/checkin/checkin_figure.png`, is kept as it was. Label set and public-data mapping: `docs/label-set.md`.
 
 ---
 
-## What's new on 4 Oct
+## Where things stand (4 Oct, evening)
 
-For Akshara: the changes since the 27 Sep check-in, newest decisions first.
+**Built and working**
 
-- **Two-stage training.** Stage 1 trains the encoder on a public dataset of short patient comments; stage 2 continues on our own labelled posts. Stage 1 needs none of our labels, so the app can work end to end before labelling is finished.
-- **A public dataset close to our task exists:** Patient Comments and Specialist Types (Mendeley, CC BY 4.0). Its 68 symptom categories are remapped to our labels. It is training data only and is never the test set.
+- **The app, end to end:** emergency rules → scrub → router → explanation, in a Gradio interface. It runs locally and from the Colab notebook `notebooks/doc_compass_app.ipynb`.
+- **Emergency rules:** 11 written rules, each quoting a warning sign published by MedlinePlus (US National Library of Medicine) or the CDC.
+- **Stage 1 for all three routers,** trained on the public Patient Comments set and scored on the same 938 held-out comments from it:
+
+  | Router | Type | Top-1 (95% CI) | Top-3 | Macro-F1 |
+  |---|---|---|---|---|
+  | TF-IDF + logistic regression | from scratch | 94.0% (92.3–95.5) | 98.6% | 0.902 |
+  | DistilRoBERTa | fine-tuned | 94.3% (92.7–95.7) | 99.0% | 0.908 |
+  | BiomedBERT | fine-tuned | 94.2% (92.6–95.6) | 98.8% | 0.904 |
+
+  The intervals overlap, so the three are tied on public data. The comments are short and alike, so this is an easy score; our own 150 test posts are the real test.
+- **Explanation:** Qwen2.5-1.5B-Instruct writes one sentence in a fixed pattern plus three questions. Its text is checked before it is shown, and fixed wording is the fallback.
+- **Labelling:** the 734 posts to label are chosen (`data/manual/pool.ids.csv`) and the labelling tool is ready (`tools/annotate.py`).
+- **Published:** the code and stage-1 routers are in a public Hugging Face repo, `ssg1/doc-compass`, which the notebook downloads.
+
+**What stage 1 showed**
+
+- Outside the public set's wording the routers can be confidently wrong: "my gums bleed when I brush" goes to Ob-Gyn at 94–96% on the fine-tuned routers, because the public set only files "bleeding" under Ob-Gyn.
+- The fine-tuned routers give 98–99% on easy inputs, so the two-option "unsure" state rarely appears until the cutoffs are tuned on dev.
+
+**Not done yet**
+
+- Labelling the posts; stage 2 (training on our own posts); tuning the cutoffs; evaluation on our test posts; the data card and the report.
+
+**Decisions made on 4 Oct**
+
+- **Two-stage training.** Stage 1 on a public dataset of short patient comments; stage 2 on our own labelled posts. Stage 1 needs none of our labels, so the app works before labelling is finished.
 - **600 posts, not 1,000.** 400 train / 50 dev / 150 test. The brief's text asks for at least 500.
 - **Labelling.** Each post gets a primary label, an optional alternate, an urgency tier and an ambiguous tick. The 150 test posts are a plain random sample, and 60 of them are labelled by both of us for Cohen's κ.
 - **Label set:** eleven specialties plus "Start with a GP". "Emergency" and "Skip" exist only while labelling. See `docs/label-set.md`.
 - **Skips.** About 1 in 6 posts in a 60-post pilot was not a "which doctor" question, so the pool is larger than 600 and labelling has a Skip option.
+- **Headline result:** the fine-tuned routers against "always GP" and against the from-scratch router on our own test posts. The human-baseline form is dropped.
 - **MedRedQA is not used.** Its labels say who answered, not where to book.
-- **Encoders are fully fine-tuned** with the `transformers` Trainer, keeping the checkpoint that scores best on dev. τ is tuned on dev; the test split is read once.
-- **Settled:** we label existing public posts from MediQ_AskDocs; TF-IDF + logistic regression is our from-scratch model; there is no expert annotation; the demo runs from a Colab link.
-- **Earlier (29 Sep – 3 Oct):** redaction on hold, hosting deferred, clinician check and PII spans dropped, Qwen2.5-1.5B kept for the explanation.
+- **Earlier (29 Sep – 3 Oct):** redaction on hold, clinician check and PII spans dropped, Qwen2.5-1.5B kept for the explanation.
 
 ---
 
@@ -48,7 +72,7 @@ For Akshara: the changes since the 27 Sep check-in, newest decisions first.
 | Scrape iCliniq specialty sections as a fallback | iCliniq's Terms of Use forbid scraping "for commercial or any other purpose whatsoever"; HF copies have no specialty field. | Dropped. |
 | ai4privacy for PII augmentation | Custom licence: redistribution and derivative works need written permission. A public model trained on it is a derivative. | Use `nvidia/Nemotron-PII` (CC BY 4.0) if full redaction comes back later. |
 | "55,071 MediQ posts" | Rows repeat each post once per doctor question, and part of the repo is synthetic. | 10,366 unique real posts (checked 29 Sep). Deduplicate on post text and skip the `synthetic/` folder. |
-| Free CPU Space | Gradio Spaces on Hugging Face now need a paid plan. | Hosting is decided later. |
+| Free CPU Space | Gradio Spaces on Hugging Face now need a paid plan. | The app runs from a Colab notebook with a public link. |
 | LLM via an external API | Text would leave our app and go to a third party. | `Qwen/Qwen2.5-1.5B-Instruct`, run locally and used as-is (not trained), with a template fallback. It sees only the concern text and the router's output. |
 | Redact, then red-flag check | Our notes disagreed on the order. | Red-flag rules run first on the raw text, before anything else. |
 | Redaction as a full second task (Presidio, CRF, PII spans on 300 posts, TAB benchmark) | Splits a one-week build across two problems; on real posts Presidio also tagged durations and drug names, which would strip routing signal. | Out of scope for now. Routing is the focus; at most a simple rule-based scrub. Full redaction returns only if time allows. |
@@ -61,7 +85,7 @@ For Akshara: the changes since the 27 Sep check-in, newest decisions first.
 
 - **Manual data.** We label existing public posts from MediQ_AskDocs: 600 of them, at least the 500 the brief asks for.
 - **Training and testing.** The labelled posts are split by post into train / dev / test. Nothing is trained or tuned on the test split.
-- **Hosting.** Gradio Spaces on Hugging Face now need a paid plan, so the demo runs from a Colab notebook. Other hosting is decided later.
+- **Hosting.** Gradio Spaces on Hugging Face now need a paid plan, so the app runs from a Colab notebook that prints a public link and QR code. The link is new on each run and works while the notebook is running.
 - **Model types.** TF-IDF + logistic regression is the trained-from-scratch model.
 - **Annotation.** No clinician check and no PII spans.
 - **MedRedQA.** Not used.
@@ -76,16 +100,16 @@ For Akshara: the changes since the 27 Sep check-in, newest decisions first.
 
 ## Project description
 
-> We're both interested in healthcare navigation, and think a system that could take a plain-language description of a health concern and suggest which specialty to actually book would be pretty great. It's a routing tool rather than a diagnostic one — which door to knock on, not what you have — with "start with a GP" as a first-class answer and a hard escape hatch for emergency symptoms. A user will interact with it through a Gradio GUI: paste a concern and get back a ranked top-3 of specialties with confidence scores and a short rationale. We'll use 600 manually labelled patient posts from MediQ_AskDocs, a form in which international students route the same posts themselves, and all three model types — a TF-IDF classifier trained from scratch, a fine-tuned DistilRoBERTa, and an off-the-shelf instruct LLM — built with Hugging Face transformers, scikit-learn, and Gradio. We think there's about a 65% chance we'll complete this before the deadline.
+> We're both interested in healthcare navigation, and think a system that could take a plain-language description of a health concern and suggest which specialty to actually book would be pretty great. It's a routing tool rather than a diagnostic one — which door to knock on, not what you have — with "start with a GP" as a first-class answer and a hard escape hatch for emergency symptoms. A user will interact with it through a Gradio GUI: paste a concern and get back a ranked top-3 of specialties with confidence scores and a short rationale. We'll use 600 manually labelled patient posts from MediQ_AskDocs and all three model types — a TF-IDF classifier trained from scratch, a fine-tuned DistilRoBERTa, and an off-the-shelf instruct LLM — built with Hugging Face transformers, scikit-learn, and Gradio. We think there's about a 65% chance we'll complete this before the deadline.
 
 ---
 
 ## How a request moves through the system
 
-1. **Red-flag check** — Written rules scan the raw text first. Emergency symptoms short-circuit straight to "Seek emergency care now" and nothing else runs. *(Rules, deliberately not learned)*
+1. **Red-flag check** — Eleven written rules scan the raw text first, each quoting a published warning sign (MedlinePlus, CDC). Emergency symptoms short-circuit straight to "Seek emergency care now" and nothing else runs. A plain negation ("no chest pain") cancels a match; past events ("I had chest pain last year") still fire. *(Rules, deliberately not learned)*
 2. **Scrub (optional)** — Simple rules remove obvious identifiers (`u/` handles, emails, phone numbers, links) and show what was removed. We otherwise assume the input is relevant and non-identifying. *(Rules; full redaction is a later extension)*
 3. **Route** — Top-3 bookable specialties with confidence. When the router is unsure (the top probability is below τ, or the top two are close), the app doesn't give one answer: it shows the top two as alternatives, says what separates them, and lets the user decide, with "Start with a GP" as the fallback. Both cutoffs are tuned on dev. *(TF-IDF + logistic regression · DistilRoBERTa vs BiomedBERT, fine-tuned in two stages)*
-4. **Explain** — A plain rationale and a few questions worth bringing to the appointment, generated from the concern text and the router's output only. *(Qwen2.5-1.5B-Instruct, used as-is; template fallback)*
+4. **Explain** — One sentence in a fixed pattern ("You described …, and Dermatology looks after …") and three questions to think about before the visit, written from the concern text and the chosen doctor only. The stated choice and its confidence always come from the router. The text is rejected if it diagnoses, guesses at a cause, uses numbers, names a medicine, or mentions a different kind of doctor; after one retry the app uses fixed wording. *(Qwen2.5-1.5B-Instruct, used as-is)*
 
 No user text is stored.
 
@@ -97,12 +121,11 @@ No user text is stored.
 
 **Need:** International students arriving in the US meet a healthcare system where booking a specialist is the patient's job. Specialties are split more finely than many home systems (podiatry vs orthopaedics, dermatology vs allergy, optometry vs ophthalmology). Insurance directories list specialties but don't say which one fits your problem. Booking the wrong one costs a wasted copay, weeks on a waitlist, or a referral loop. Both of us have run into this. The system answers one narrow question, "which door do I knock on?", and never "what do I have?".
 
-**Doing it well** means three things: it routes correctly more often than our target users do on their own; it never delays an emergency; and it is fast enough to use.
+**Doing it well** means three things: on real posts it routes far better than always answering "Start with a GP"; it never delays an emergency; and it is fast enough to use.
 
 **Measured by:**
-- **Headline:** top-1 and top-3 accuracy of the fine-tuned routers on our own 150 test posts, against an "always GP" baseline and against the from-scratch router
-- Top-1 / top-3 accuracy and macro-F1 on the 150-post test split, with exact intervals, split clear vs ambiguous, compared with an "always GP" baseline
-- Emergency recall reported on its own line, targeting close to 100%
+- **Headline:** top-1 and top-3 accuracy and macro-F1 of the fine-tuned routers on our own 150 test posts, with exact intervals, against an "always GP" baseline and against the from-scratch router; also split clear vs ambiguous
+- Emergency recall on handwritten emergency cases, reported on its own line, plus the false-alarm rate on our labelled posts
 - How often the unsure state fires, and top-2 accuracy within it (a hit counts if either option matches the primary or alternate label)
 - Label quality: Cohen's κ on 60 double-labelled test posts
 - Latency per request
@@ -119,7 +142,7 @@ All three. The from-scratch and fine-tuned routers are compared in an ablation; 
 
 ### Requirement 4 — GUI
 
-Gradio app: paste a concern, get the top-3 specialties with confidence and a rationale. A confident result leads with one specialty; an unsure one presents two options side by side for the user to choose between. Rules run first, no input is retained, examples in the app are made up, and it ships with a model card and a data card. Hosting is decided later.
+Gradio app: paste a concern, get the top-3 specialties with confidence and a rationale. A confident result leads with one specialty; an unsure one presents two options side by side for the user to choose between. The result is drawn as a sign: blue for one answer, amber for two options, red for an emergency. Rules run first, no input is retained, and the examples in the app are made up. It runs from `notebooks/doc_compass_app.ipynb` in Colab. The model card is on Hugging Face; the data card is still to write.
 
 ### Also in the brief — GenAI reflection
 
@@ -133,13 +156,13 @@ Keep a running log of GenAI use from day one rather than reconstructing it at th
 |---|---|---|
 | Trained from scratch | TF-IDF + logistic regression | — |
 | Fine-tuned | `distilbert/distilroberta-base` vs `microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract-fulltext`, all weights trained, in two stages | — |
-| Off-the-shelf | *Optional:* Qwen as a zero-shot router, for comparison | `Qwen/Qwen2.5-1.5B-Instruct`, used as-is (not trained) |
+| Off-the-shelf | *Optional:* Qwen as a zero-shot router, for comparison | `Qwen/Qwen2.5-1.5B-Instruct`, used as-is (not trained); its text is checked, with fixed wording as the fallback |
 
-The red-flag rules and the optional scrub are rules, not model types. The encoder comparison keeps the v1 research question: do biomedical encoders, pretrained on clinician-written text, lose to general ones on patient-written posts? It costs one extra run of the same script. BiomedBERT has 12 layers to DistilRoBERTa's 6, so size is a confound; say so, or add a 12-layer general encoder.
+The red-flag rules and the optional scrub are rules, not model types. The encoder comparison keeps the v1 research question: does a biomedical encoder, pretrained on biomedical research papers, lose to a general one on patient-written posts? On the public set the two are tied. It costs one extra run of the same script. BiomedBERT has 12 layers to DistilRoBERTa's 6, so size is a confound; say so, or add a 12-layer general encoder.
 
 ### Training in two stages
 
-1. **Stage 1, public data.** Train the encoder on the Patient Comments set (6,252 unique comments after removing emoji and duplicates), remapped to our label set. No labels of ours are needed.
+1. **Stage 1, public data (done).** Train the encoder on the Patient Comments set (6,252 unique comments after removing emoji and duplicates; 938 held out for scoring), remapped to our label set. No labels of ours are needed. Four epochs took 3 minutes for DistilRoBERTa and 5 for BiomedBERT on a laptop.
 2. **Stage 2, our data.** Continue training the same model on our 400 gold training posts, so it adapts to our labels and to how real posts are written.
 3. **Checks.** Both stages use one fixed label list, so the model's output layer never changes. On dev we compare three versions: gold only, public only, and public then gold. τ is tuned on dev. The test split is read once at the end.
 
@@ -176,22 +199,26 @@ Checked on 27 Sep 2026 against the Hugging Face API, dataset files, papers and l
 ## Task plan, 4–8 Oct
 
 ### 4 Oct · Unblock labelling, get the app working
-- [ ] Approve the label set and the public-data mapping (`docs/label-set.md`)
-- [ ] Data prep: load MediQ_AskDocs `original/`, dedupe on post text, strip `u/` handles and links, length-filter, draw a seeded pool
-- [ ] Labelling tool and the pool of posts to label
-- [ ] Stage 1: TF-IDF router and encoder trained on the public set
-- [ ] Red-flag rules with a cited source per rule; optional scrub; template explanation
-- [ ] Gradio app running end to end, plus the notebook that launches it with a public link
+- [x] Label set and public-data mapping agreed (`docs/label-set.md`)
+- [x] Data prep: load MediQ_AskDocs `original/`, dedupe on post text, strip `u/` handles and links, length-filter, draw a seeded pool
+- [x] Labelling tool and the pool of posts to label
+- [x] Stage 1: all three routers trained on the public set
+- [x] Red-flag rules with a cited source per rule; scrub; fixed-wording explanation
+- [x] Qwen2.5-1.5B explanation with its checks and the fallback
+- [x] Gradio app running end to end, plus the Colab notebook that launches it with a public link and QR code
+- [x] Code and stage-1 routers published to the Hugging Face Hub
 
 ### 5 Oct · Presentation
-- [ ] Demo video from the working app; QR code to the Colab notebook
-- [ ] Slides say plainly that the router shown is stage 1 (public data only) and that results on our own test posts follow on 8 Oct
+- [ ] Record the demo video from the working app
+- [ ] Run the notebook 10–15 minutes before the talk and put that run's QR code on the demo slide
+- [ ] Slides say plainly that the router shown has only seen public data
 
 ### 5–6 Oct · Label and fine-tune
-- [ ] Both of us: label the 450 train and dev posts and the 150 test posts; double-label 60
-- [ ] Stage 2: DistilRoBERTa and BiomedBERT on our 400 training posts; tune τ on dev
-- [ ] Qwen2.5-1.5B explanation with its checks and the template fallback
-- [ ] Push the models and code bundle to the Hugging Face Hub
+- [ ] First-pass labels for the train and dev posts
+- [ ] Both of us: label the train and dev posts and the 150 test posts; double-label 60
+- [ ] Script that computes Cohen's κ on the 60 shared posts, merges them into one label each, and writes the train / dev / test splits
+- [ ] Stage 2: DistilRoBERTa and BiomedBERT on our 400 training posts; tune the cutoffs on dev
+- [ ] Republish the bundle with the stage-2 routers
 
 ### 7 Oct · Evaluate
 - [ ] Routing on the 150-post test split: top-1, top-3, macro-F1, exact intervals, clear vs ambiguous, vs "always GP"
@@ -201,7 +228,7 @@ Checked on 27 Sep 2026 against the Hugging Face API, dataset files, papers and l
 
 ### 8 Oct · Ship and write
 - [ ] Final app: disclaimer, "Start with a GP" always visible, made-up examples only, no input retained
-- [ ] Model card (English only, self-selected online posters, not clinically validated) and data card (sources, licences, Reddit terms, labels + ids instead of text)
+- [ ] Data card (sources, licences, Reddit terms, labels + ids instead of text); update the model card with stage-2 results
 - [ ] Report: need, measurement approach, κ, results, ablation, what we dropped and why, GenAI reflection
 
 ---
@@ -212,10 +239,12 @@ Checked on 27 Sep 2026 against the Hugging Face API, dataset files, papers and l
 |---|---|
 | Annotation runs long | Keep at least 500 labelled posts that one of us has looked at: the 150 test posts plus 350 train and dev posts. Cut the double-labelled set before anything else. |
 | The public set's labels are noisy and its style is unlike real posts (short, emoji, slang) | Strip emoji; treat it as stage 1 only; check on dev that public-then-gold beats gold alone, and drop stage 1 if it doesn't. |
-| The LLM we pick is unavailable or too slow | Template-only rationale; the rest of the pipeline doesn't depend on the LLM. |
+| Qwen is unavailable, too slow, or writes something that fails its checks | The app falls back to fixed wording; the rest of the pipeline doesn't depend on Qwen. On 16 test inputs, 15 explanations passed. |
+| When the router picks the wrong doctor, Qwen still writes a fluent sentence for it | The fixed sentence pattern puts what the user said next to what that doctor covers, so a mismatch is visible. Fixing the router (stage 2) is the real remedy. |
+| The fine-tuned routers are over-confident, so the "unsure" state rarely fires | Tune both cutoffs on dev; if that isn't enough, rescale the confidences on dev before applying them. |
 | Rare specialties get very few of the 150 random test posts | Report per-class counts and exact intervals; lead with overall and macro numbers; merge labels if a class is nearly empty. |
 | "Start with a GP" dominates the labels | Report macro-F1 and an "always GP" baseline so a GP-only model can't look good. |
-| Red-flag keywords may fire on non-emergency posts ("chest pain" appears in 281 of 10,366 MediQ posts; how many of those are real emergencies is unchecked) | Report the false-alarm rate as well as recall; add simple context rules (negation, past tense) only if false alarms are high. |
+| Red-flag keywords may fire on non-emergency posts ("chest pain" appears in 281 of 10,366 MediQ posts; how many of those are real emergencies is unchecked) | Report the false-alarm rate as well as recall. Plain negation is handled; past events and other people's symptoms still fire, and we add rules for those only if false alarms are high. |
 | If full redaction comes back: it strips routing signal (on 200 sampled posts, Presidio with `en_core_web_sm` tagged durations and drug names as PII and caught 3 of 44 age/sex mentions) | Restrict it to the entity types we need, add an age/sex recognizer, and report router accuracy on raw vs redacted text. |
 | 12.5% of posts exceed the encoders' 512-token limit | Truncate the head (title plus opening), or head plus tail; tune on dev. |
 | Colab gives no GPU | Kaggle notebooks; DistilRoBERTa on a few hundred posts also trains on a laptop in minutes. |
