@@ -1,0 +1,14 @@
+# Data prep, the from-scratch router, the labelling tool and the app.
+pandas==3.0.6
+scikit-learn==1.9.1
+joblib==1.6.0
+scipy==1.18.1
+openpyxl==3.1.5
+huggingface_hub==1.33.0
+certifi
+gradio==6.28.0
+# The fine-tuned routers. The app falls back to the from-scratch router without these.
+torch==2.14.1
+transformers==5.18.0
+accelerate==1.15.0
+pytest==9.1.1

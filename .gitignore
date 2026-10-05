@@ -2,6 +2,8 @@
 data/**
 !data/**/
 !data/**/*.labels.csv
+!data/**/*.ids.csv
+!data/synthetic/emergency_cases.csv
 
 # Models and checkpoints
 checkpoints/
@@ -16,3 +18,6 @@ __pycache__/
 # Secrets and OS files
 .env
 .DS_Store
+
+working-log.md
+proj.txt
