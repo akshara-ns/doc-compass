@@ -32,6 +32,8 @@ python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 python scripts/prepare_data.py     # downloads both datasets and builds the local files
 python scripts/train_tfidf.py      # trains the from-scratch router on the public set
+python scripts/train_encoder.py --model distilroberta   # fine-tuned router, a few minutes on a laptop
+python scripts/train_encoder.py --model biomedbert
 pytest                             # checks the rules, the scrub and the pipeline
 ```
 
@@ -39,6 +41,7 @@ pytest                             # checks the rules, the scrub and the pipelin
 
 ```bash
 python -m doccompass.app                    # the app, at http://127.0.0.1:7860
+python -m doccompass.app --llm              # the same, with Qwen writing the explanation (about 3 GB the first time)
 python tools/annotate.py --annotator NAME   # the labelling tool (NAME is sohum or akshara)
 ```
 
@@ -49,12 +52,17 @@ The labelling tool shows one post at a time and saves to `data/manual/NAME.label
 1. **Red-flag check**: written rules, each citing a published warning sign; emergencies go straight to "Seek emergency care now"
 2. **Scrub**: simple rules remove handles, emails, phone numbers and links
 3. **Route**: TF-IDF + logistic regression, and fine-tuned DistilRoBERTa vs BiomedBERT. When the router is unsure it shows two options instead of one
-4. **Explain**: a short reason and questions to bring, from the routing result only
+4. **Explain**: Qwen2.5-1.5B-Instruct writes a one-sentence reason and three questions, from the concern and the routing result only. Its text is checked before it is shown, and fixed wording is the fallback
+
+## Demo notebook
+
+`notebooks/doc_compass_app.ipynb` runs the app in Colab and prints a public link with a QR code. It downloads the code and models from a public Hugging Face repo, which `python scripts/publish_bundle.py` uploads (run `hf auth login` first).
 
 | Path | What it holds |
 |---|---|
 | `doccompass/` | the package: labels, data loading, rules, routers, pipeline, app |
-| `scripts/` | data prep, pool selection, training |
+| `scripts/` | data prep, pool selection, training, publishing the app bundle |
+| `notebooks/` | the Colab demo notebook |
 | `tools/annotate.py` | the labelling tool |
 | `tests/` | pytest checks |
 | `docs/label-set.md` | the label set and the public-data mapping |
