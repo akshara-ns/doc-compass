@@ -12,6 +12,34 @@ from dataclasses import dataclass
 MEDLINEPLUS = ("MedlinePlus: Recognizing medical emergencies", "https://medlineplus.gov/ency/article/001927.htm")
 CDC_STROKE = ("CDC: Signs and Symptoms of Stroke", "https://www.cdc.gov/stroke/signs-symptoms/index.html")
 
+# Every adult warning sign on the two source pages, as published. The rules below cover the
+# ones that can be matched by wording; the language-model check is given the whole list.
+WARNING_SIGNS = [(sign, MEDLINEPLUS) for sign in (
+    "Bleeding that will not stop",
+    "Breathing problems (difficulty breathing, shortness of breath)",
+    "Change in mental status (such as unusual behavior, confusion, difficulty arousing)",
+    "Chest pain or discomfort lasting for two minutes or more",
+    "Choking",
+    "Coughing up or vomiting blood",
+    "Fainting or loss of consciousness",
+    "Feeling of committing suicide or murder",
+    "Head or spine injury",
+    "Inability to speak",
+    "Severe abdominal pain or pressure",
+    "Severe or persistent vomiting or diarrhea",
+    "Sudden injury from a motor vehicle accident, burns, smoke inhalation, near drowning, or a deep or large wound",
+    "Sudden, severe pain anywhere in the body",
+    "Sudden dizziness, weakness, or change in vision",
+    "Swallowing a poisonous substance",
+    "Swelling of the face, eyes, or tongue",
+)] + [(sign, CDC_STROKE) for sign in (
+    "Sudden numbness or weakness in the face, arm, or leg, especially on one side",
+    "Sudden confusion, trouble speaking, or difficulty understanding speech",
+    "Sudden trouble seeing",
+    "Sudden trouble walking, dizziness, loss of balance, or lack of coordination",
+    "Sudden severe headache with no known cause",
+)]
+
 EMERGENCY_MESSAGE = "This may be an emergency. Call 911 or go to the nearest emergency room now."
 CRISIS_MESSAGE = "You can also call or text 988 (Suicide & Crisis Lifeline), free and open at any time."
 
@@ -38,7 +66,12 @@ RULES = [
           rf"\b(?:{_CANT}|can barely|barely able to|struggling to|hard to|trouble|difficulty) breath(?:e|ing)\b|\bshort(?:ness)? of breath\b|\bgasping for (?:air|breath)\b"),
     _rule("stroke signs", "Sudden numbness or weakness in the face, arm, or leg; sudden confusion or trouble speaking", CDC_STROKE,
           rf"\bface (?:is |was )?drooping\b|\bslurred speech\b|\b(?:{_CANT}|trouble) (?:speak|speaking|talk|talking)\b"
-          r"|\bsudden(?:ly)? (?:numb|weak|confus)\w*|\b(?:numb|weak)\w* on (?:one|the left|the right|my left|my right) side\b"),
+          r"|\bsudden(?:ly)? (?:numb|weak|confus)\w*|\b(?:numb|weak)\w* on (?:one|the left|the right|my left|my right) side\b"
+          # the word itself, and one-sided or facial numbness, drooping or weakness
+          r"|\bstrokes?\b(?! of (?:luck|genius))"
+          r"|\bface (?:is |was |feels |went |has gone )?(?:numb|droopy|drooped|weak|paraly[sz]ed)\b"
+          r"|\bfacial (?:droop\w*|paralysis|numbness|weakness)\b"
+          r"|\b(?:left|right|one|half|side) (?:side )?of (?:my|the|his|her) (?:face|body)\b[^.!?]{0,25}\b(?:numb|droop\w*|weak|paraly[sz]ed|tingl\w*)"),
     _rule("bleeding", "Bleeding that will not stop; coughing up or vomiting blood", MEDLINEPLUS,
           rf"\bbleeding (?:that )?(?:won'?t|will not|doesn'?t|does not) stop\b|\b{_CANT} stop (?:the )?bleeding\b"
           r"|\b(?:coughing|coughed|vomiting|vomited|throwing|threw) up blood\b"),
@@ -85,6 +118,6 @@ def find_flags(text: str) -> list[dict]:
 
 def emergency_message(flags: list[dict]) -> str:
     message = EMERGENCY_MESSAGE
-    if any(flag["rule"] == "suicidal thoughts" for flag in flags):
+    if any("suicide" in flag["sign"].lower() for flag in flags):
         message += " " + CRISIS_MESSAGE
     return message

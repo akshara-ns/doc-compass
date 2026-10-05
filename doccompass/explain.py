@@ -8,6 +8,7 @@ import json
 import re
 
 from .labels import GP, SCOPE
+from .redflags import WARNING_SIGNS
 
 COMMON_QUESTIONS = [
     "When did it start, and is it getting better, worse or staying the same?",
@@ -150,6 +151,25 @@ def check_generated(parsed, allowed_labels: list[str]) -> list[str]:
     return problems
 
 
+_SAFETY_SYSTEM = """You are a safety check in front of an app that suggests which kind of doctor to book. You do one thing: decide whether a message describes a medical emergency happening NOW, to the writer or to someone who is with them.
+
+It is an emergency if the message describes any of these warning signs happening now:
+{signs}
+
+It is NOT an emergency when the event is in the past and over, when it happened to someone who is not with the writer now, when the message says the sign is absent, or when the wording is a figure of speech.
+
+Reply with JSON only: {{"emergency": true or false, "sign": the number of the matching warning sign, or 0}}"""
+
+_SAFETY_EXAMPLES = [  # made up; none of these appear in the evaluation cases
+    ("My brother just fell down the stairs and now he is talking nonsense and can't stay awake.", {"emergency": True, "sign": 3}),
+    ("I broke my wrist skiing three years ago and it still aches when it rains.", {"emergency": False, "sign": 0}),
+    ("There is a piece of food stuck in my wife's throat and she can't get any air in.", {"emergency": True, "sign": 5}),
+    ("I have had dry, flaky skin on my elbows for a few months.", {"emergency": False, "sign": 0}),
+    ("My aunt had a heart attack in 2019. I want to know which doctor can check my own heart.", {"emergency": False, "sign": 0}),
+    ("These exams are killing me and I can't sleep.", {"emergency": False, "sign": 0}),
+]
+
+
 class QwenExplainer:
     """Writes the reason and the questions with Qwen2.5-1.5B-Instruct, used as downloaded.
 
@@ -169,6 +189,35 @@ class QwenExplainer:
         self.tokenizer = AutoTokenizer.from_pretrained(QWEN["repo"], revision=QWEN["revision"])
         self.model = AutoModelForCausalLM.from_pretrained(QWEN["repo"], revision=QWEN["revision"], dtype=dtype).to(self.device).eval()
 
+    def _chat(self, messages: list[dict], max_new_tokens: int, sample: bool = False) -> str:
+        inputs = self.tokenizer.apply_chat_template(messages, add_generation_prompt=True, return_tensors="pt", return_dict=True).to(self.device)
+        settings = {"do_sample": True, "temperature": 0.7, "top_p": 0.9} if sample else {"do_sample": False}
+        with self.torch.inference_mode():
+            output = self.model.generate(**inputs, max_new_tokens=max_new_tokens, pad_token_id=self.tokenizer.eos_token_id, **settings)
+        return self.tokenizer.decode(output[0, inputs["input_ids"].shape[1]:], skip_special_tokens=True)
+
+    def emergency_sign(self, text: str) -> dict | None:
+        """A second emergency check for wording the written rules don't cover.
+
+        Returns a flag naming the published warning sign the model matched, or None.
+        A reply that can't be read counts as no flag: the rules have already run.
+        """
+        signs = "\n".join(f"{number}. {sign}" for number, (sign, _) in enumerate(WARNING_SIGNS, start=1))
+        messages = [{"role": "system", "content": _SAFETY_SYSTEM.format(signs=signs)}]
+        for example, reply in _SAFETY_EXAMPLES:
+            messages += [{"role": "user", "content": example}, {"role": "assistant", "content": json.dumps(reply)}]
+        messages.append({"role": "user", "content": text[:1500]})
+        match = re.search(r"\{.*?\}", self._chat(messages, max_new_tokens=24), re.DOTALL)
+        try:
+            reply = json.loads(match.group(0)) if match else {}
+        except json.JSONDecodeError:
+            return None
+        if reply.get("emergency") is not True:
+            return None
+        number = reply.get("sign")
+        sign, source = WARNING_SIGNS[number - 1] if isinstance(number, int) and 1 <= number <= len(WARNING_SIGNS) else ("a warning sign", WARNING_SIGNS[0][1])
+        return {"rule": "language-model check", "matched": "", "sign": sign, "source": source[0], "url": source[1]}
+
     def _generate(self, record: dict, label: str, sample: bool) -> str:
         request = {"concern": record["text"][:1500], "doctor": "a GP" if label == GP else label, "covers": SCOPE[label]}
         messages = [{"role": "system", "content": _SYSTEM}]
@@ -176,11 +225,7 @@ class QwenExplainer:
             messages += [{"role": "user", "content": json.dumps(example_request)},
                          {"role": "assistant", "content": json.dumps(example_reply)}]
         messages.append({"role": "user", "content": json.dumps(request)})
-        inputs = self.tokenizer.apply_chat_template(messages, add_generation_prompt=True, return_tensors="pt", return_dict=True).to(self.device)
-        settings = {"do_sample": True, "temperature": 0.7, "top_p": 0.9} if sample else {"do_sample": False}
-        with self.torch.inference_mode():
-            output = self.model.generate(**inputs, max_new_tokens=200, pad_token_id=self.tokenizer.eos_token_id, **settings)
-        return self.tokenizer.decode(output[0, inputs["input_ids"].shape[1]:], skip_special_tokens=True)
+        return self._chat(messages, max_new_tokens=200, sample=sample)
 
     def __call__(self, record: dict) -> str | None:
         """Markdown for a routed record, or None when two attempts both fail the checks."""

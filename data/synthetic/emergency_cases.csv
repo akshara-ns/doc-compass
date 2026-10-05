@@ -1,0 +1,81 @@
+text,emergency,kind
+I have crushing chest pain that started twenty minutes ago.,1,direct
+I can't breathe properly and my lips are turning blue.,1,direct
+My husband's face is drooping on one side and his speech is slurred.,1,direct
+I've been coughing up blood since this morning.,1,direct
+My roommate passed out and I can't wake her.,1,direct
+I want to kill myself and I have a plan.,1,direct
+My tongue is swelling up after a bee sting.,1,direct
+"I fell off my bike and hit my head, and now I keep vomiting.",1,direct
+I think I took an overdose of my sleeping pills.,1,direct
+I suddenly have the worst headache of my life.,1,direct
+I suddenly lost vision in my right eye.,1,direct
+The bleeding won't stop from a deep cut on my arm.,1,direct
+I'm short of breath just sitting here and it is getting worse.,1,direct
+"I think I'm having a stroke, the left side of my face is numb.",1,direct
+My dad fainted in the kitchen a minute ago and is still on the floor.,1,direct
+It feels like an elephant is sitting on my ribcage and my left arm is tingling.,1,paraphrase
+I'm gasping and can't get enough air no matter what I do.,1,paraphrase
+Half of my face won't move and I'm drooling out of one corner of my mouth.,1,paraphrase
+My words are coming out jumbled and I can't lift my right arm.,1,paraphrase
+My friend collapsed and isn't responding to anything I say.,1,paraphrase
+I don't see the point in living anymore and I've been planning how to end things.,1,paraphrase
+My airway feels like it is narrowing after I ate shrimp.,1,paraphrase
+My lips and eyelids are puffing up fast after a new antibiotic and I feel itchy all over.,1,paraphrase
+I swallowed a whole bottle of painkillers an hour ago.,1,paraphrase
+My toddler drank some drain cleaner.,1,paraphrase
+A pounding in my skull came out of nowhere and it is the most intense I have ever felt.,1,paraphrase
+"Everything went dark in one eye a few minutes ago, like a curtain coming down.",1,paraphrase
+Blood is soaking through the towel and it keeps coming.,1,paraphrase
+I threw up and it looked like coffee grounds with red streaks in it.,1,paraphrase
+My dad doesn't know where he is all of a sudden and one arm is hanging limp.,1,paraphrase
+I got hit by a car and my neck hurts when I move.,1,paraphrase
+There's a tight squeezing behind my breastbone and I'm sweating and nauseous.,1,paraphrase
+I can only get out a few words before I run out of air.,1,paraphrase
+He's still breathing but I can't wake him up no matter what I try.,1,paraphrase
+I'm seeing double all of a sudden and I feel very dizzy and weak.,1,paraphrase
+A stabbing pain in my belly started suddenly and I can't stand up straight.,1,paraphrase
+"Everyone would be better off without me, and I've started giving my things away.",1,paraphrase
+A heavy pressure in the middle of my torso is spreading up to my jaw.,1,paraphrase
+I breathed in a lot of smoke in a kitchen fire and now I'm wheezing badly.,1,paraphrase
+I can't feel anything down my left side all of a sudden.,1,paraphrase
+I've had an itchy rash on my forearm for two weeks.,0,ordinary
+My knee aches after long runs.,0,ordinary
+One of my back teeth is sensitive to cold drinks.,0,ordinary
+I get heartburn after spicy food most evenings.,0,ordinary
+My period is a week late and I feel bloated.,0,ordinary
+My acne has got worse since I changed my face wash.,0,ordinary
+"My lower back has been stiff for months, mostly in the morning.",0,ordinary
+I've been anxious before exams and can't concentrate.,0,ordinary
+Text looks blurry when I read for a long time.,0,ordinary
+My ears have been ringing since a loud concert last weekend.,0,ordinary
+I'm losing more hair than usual in the shower.,0,ordinary
+I think I have a fungal infection under my big toenail.,0,ordinary
+I get a mild headache most afternoons at work.,0,ordinary
+I can't fall asleep before 3am lately.,0,ordinary
+I've been constipated for about five days.,0,ordinary
+I've had a sore throat and a runny nose for two days.,0,ordinary
+There is a wart on my finger that keeps coming back.,0,ordinary
+It burns a little when I pee and I need to go often.,0,ordinary
+My eyes itch and I sneeze a lot every spring.,0,ordinary
+My shoulder clicks when I lift weights overhead.,0,ordinary
+I had chest pain two years ago and it turned out to be nothing. Now I have a rash on my arm.,0,tricky
+My grandfather had a stroke last year. Which doctor can check my own risk?,0,tricky
+"No chest pain or breathing trouble, just a cough that has lasted three weeks.",0,tricky
+I fainted once as a teenager. These days I just get migraines now and then.,0,tricky
+My knee is killing me after soccer.,0,tricky
+This acne is so bad I could die of embarrassment.,0,tricky
+"I bumped my head lightly on a cabinet last week and it's fine, but my neck is stiff from sleeping badly.",0,tricky
+Heart attacks run in my family and I'd like a checkup.,0,tricky
+My heart races a bit when I drink too much coffee.,0,tricky
+I sometimes feel dizzy for a second when I stand up too fast.,0,tricky
+I cut my finger cooking yesterday. It stopped bleeding quickly but looks a little red today.,0,tricky
+My contact lenses make my vision blurry by the evening.,0,tricky
+I've felt sad since my breakup and I'd like someone to talk to.,0,tricky
+There is a small sore spot on my tongue that stings with spicy food.,0,tricky
+My face goes red and blotchy after I drink alcohol.,0,tricky
+I lose my voice after cheering at games.,0,tricky
+My hands go numb when I sleep on them.,0,tricky
+My eyelid has been twitching for a few days.,0,tricky
+My mother was hospitalised for a blood clot in 2020 and I want to know if I should get tested.,0,tricky
+I felt a bit out of breath after climbing six flights of stairs with groceries.,0,tricky

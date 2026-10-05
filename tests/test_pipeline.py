@@ -49,6 +49,10 @@ def torn():
     "I don't want to live anymore",
     "I don't know why but I have chest pain",
     "not sure why my chest pain started an hour ago",
+    "left face stroke",
+    "I think I'm having a stroke",
+    "the left side of my face is numb",
+    "one side of his body went weak and he can't lift his arm",
 ])
 def test_emergencies_are_flagged(text):
     assert find_flags(text)
@@ -63,6 +67,8 @@ def test_emergencies_are_flagged(text):
     "I don't want to die from this, should I see a dermatologist",
     "I have never had chest pain, only a sore shoulder",
     "there was no shortness of breath, just a cough",
+    "it was a stroke of luck that the rash cleared up",
+    "my face is red and itchy after using a new cream",
 ])
 def test_ordinary_concerns_are_not_flagged(text):
     assert not find_flags(text)
@@ -137,3 +143,34 @@ def test_failed_explainer_falls_back_to_template():
 
     result = route_concern("itchy rash on my arm for weeks", confident(), Broken())
     assert result["explained_by"] == "template" and result["explanation"]
+
+
+def test_model_check_runs_only_when_the_rules_are_silent():
+    class Checker:
+        name = "checker"
+        calls = 0
+
+        def emergency_sign(self, text):
+            Checker.calls += 1
+            return {"rule": "language-model check", "matched": "", "sign": "Choking", "source": "s", "url": "u"}
+
+        def __call__(self, record):
+            return None
+
+    hit_by_rule = route_concern("I have chest pain right now", confident(), Checker())
+    assert hit_by_rule["flags"][0]["rule"] == "chest pain" and Checker.calls == 0
+    hit_by_model = route_concern("something is stuck in my windpipe and no air is getting in", confident(), Checker())
+    assert hit_by_model["status"] == "emergency" and hit_by_model["flags"][0]["rule"] == "language-model check"
+
+
+def test_broken_model_check_does_not_block_routing():
+    class Broken:
+        name = "broken"
+
+        def emergency_sign(self, text):
+            raise RuntimeError("model unavailable")
+
+        def __call__(self, record):
+            return None
+
+    assert route_concern("itchy rash on my arm for weeks", confident(), Broken())["status"] == "routed"

@@ -3,6 +3,7 @@ data/**
 !data/**/
 !data/**/*.labels.csv
 !data/**/*.ids.csv
+!data/synthetic/emergency_cases.csv
 
 # Models and checkpoints
 checkpoints/

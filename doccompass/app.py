@@ -106,7 +106,9 @@ def render(result: dict) -> tuple[str, str, str]:
     if result["status"] == "invalid":
         return _sign("empty", "", "Nothing to route yet", escape(result["message"])), "", ""
     if result["status"] == "emergency":
-        reasons = "; ".join(f"“{escape(flag['matched'])}” ([{flag['source']}]({flag['url']}))" for flag in result["flags"])
+        reasons = "; ".join(
+            (f"“{escape(flag['matched'])}”" if flag["matched"] else "a second, language-model check judged that this may match a published warning sign")
+            + f" ([{flag['source']}]({flag['url']}))" for flag in result["flags"])
         sign = _sign("emergency", _ALERT, "This may be an emergency", "Seek emergency care now",
                      escape(result["message"].replace("This may be an emergency. ", "")))
         return sign, f"Why this was flagged: {reasons}. The rest of the app did not run.", ""

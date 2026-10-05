@@ -52,7 +52,16 @@ def route_concern(text: str, router, explainer=None) -> dict:
     text = text[:MAX_CHARS]
 
     # 1. Red flags run first, on the raw text. An emergency stops everything else.
+    #    The written rules decide alone when they fire. When they don't, and a language model
+    #    is loaded, it gets a second look for wording the rules can't match.
     result["flags"] = find_flags(text)
+    if not result["flags"] and hasattr(explainer, "emergency_sign"):
+        try:
+            flag = explainer.emergency_sign(text)
+        except Exception:
+            flag = None
+        if flag:
+            result["flags"] = [flag]
     if result["flags"]:
         result["status"] = "emergency"
         result["message"] = emergency_message(result["flags"])
