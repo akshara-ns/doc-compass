@@ -66,7 +66,7 @@ The labelling tool shows one post at a time and saves to `data/manual/NAME.label
 | `tools/annotate.py` | the labelling tool |
 | `tests/` | pytest checks |
 | `docs/label-set.md` | the label set and the public-data mapping |
-| `which-doctor-do-i-book.md` | the full plan |
+| `doc-compass-plan.md` | the full plan |
 | `docs/checkin/` | system figures |
 
 ## Data rules

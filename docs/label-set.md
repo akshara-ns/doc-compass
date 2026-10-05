@@ -55,7 +55,7 @@ What this suggests:
 
 ## Mapping the public Patient Comments set
 
-Source: Patient Comments and Specialist Types (Mendeley Data, DOI 10.17632/2twgjzpn82.2, CC BY 4.0). Its 68 symptom categories are each mapped to one of our labels, to "Start with a GP", or dropped. Row counts are from its two files combined (8,441 rows).
+Source: Patient Comments and Specialist Types (Mendeley Data, DOI 10.17632/2twgjzpn82.2, CC BY 4.0). It is used for stage-1 training only. Its 68 symptom categories are each mapped to one of our labels, to "Start with a GP", or dropped. Row counts are from its two files combined (8,441 rows).
 
 **Mapped to a specialty**
 

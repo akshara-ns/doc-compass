@@ -11,7 +11,7 @@ Say:     We built a tool that routes a health concern to a kind of doctor. It ne
 
 
 SLIDE 2 — MOTIVATION (Sohum, 1 min)
-Title:   In the US, picking the right specialist is the patient's job, and a wrong pick costs weeks
+Title:   In the US, picking the right specialist is the patient's job, and a wrong pick means paying and waiting twice
 On it:   A three-step picture of the wrong path: book a specialist -> "you need a different doctor"
          -> start again (another copay, another waitlist).
          Small text: specialties are split finely (podiatry vs orthopedics, optometry vs ophthalmology).
@@ -22,7 +22,8 @@ Say:     We are both international students and have both booked the wrong door.
 
 SLIDE 3 — WHAT IT DOES (Sohum, 45 s)
 Title:   Doc Compass answers one narrow question, and always offers "Start with a GP"
-On it:   Screenshot of the app with a result: "Book: Dermatology", top-3 bars, questions to bring.
+On it:   Screenshot of the app with a result: the blue sign "Book an appointment with Dermatology",
+         the top three with bars, and the questions to bring.
          Three callouts on the screenshot:
            1. top 3 with confidence, not one verdict
            2. "Start with a GP" is always an option
@@ -45,7 +46,8 @@ Title:   No public dataset fit the task, so we labelled real patient posts ourse
 On it:   Left: what exists and why it doesn't fit (3 short rows)
            clinician notes (MTSamples)        -> doctor's language, not a patient's
            synthetic triage sets               -> machine-written textbook cases
-           Patient Comments (Mendeley)         -> close, but one-line comments; we use it for pre-training
+           Patient Comments (Mendeley)         -> one-line comments, not real posts;
+                                                  we use it only for pre-training
          Right: our dataset
            600 real r/AskDocs posts (from 10,366 unique posts in MediQ_AskDocs)
            label = which doctor to book: 11 specialties + "Start with a GP"
@@ -56,34 +58,43 @@ Say:     The label is a door, not a diagnosis, so it can follow a written guidel
 
 
 SLIDE 6 — MODELS (Sohum, 1 min 15 s)
-Title:   Three model types do the same routing job, trained in two stages
+Title:   Two kinds of router tie on public data; an off-the-shelf LLM explains
 On it:   Table (stage 1, same 938 held-out public comments):
            Model                              Type            Top-1     Top-3    Macro-F1
            TF-IDF + logistic regression       from scratch    94.0%     98.6%    0.902
            DistilRoBERTa                      fine-tuned      94.3%     99.0%    0.908
            BiomedBERT                         fine-tuned      94.2%     98.8%    0.904
-         Small diagram: Stage 1 public comments (6,252) -> Stage 2 our 400 posts -> test on our 150
+         Small diagram: Stage 1: 6,252 public comments (938 of them held out for this table)
+                        -> Stage 2: our 400 posts -> test on our 150
          Footnote: 95% intervals overlap (about ±1.6 points), so the three are tied on public data.
+                   The public comments are short and alike, so ~94% is an easy score.
+                   Our own 150 posts are the real test.
 Say:     Stage 1 teaches the task on public data; stage 2 adapts to how real people write.
-         One research question: does a biomedical encoder, trained on clinicians' text,
-         beat a general one on patients' words? On public data: no difference.
-         Off-the-shelf: Qwen2.5-1.5B writes the explanation and is never trained.
+         One research question: does BiomedBERT, pretrained on biomedical research papers,
+         beat a general encoder on patients' words? On public data: no difference.
+         (BiomedBERT is also twice as deep, 12 layers to 6, so it is not a like-for-like test.)
+         Off-the-shelf: Qwen2.5-1.5B writes the reason and the questions and is never trained.
+         Its text is checked before it is shown, and fixed wording is the fallback.
 
 
 SLIDE 7 — DEMO (both, 1 min 30 s)
-Title:   From a sentence to a door in under a second
-On it:   The demo video (about 60 s), full slide. QR code to the Colab notebook in the corner.
-Video:   1. type a rash concern            -> "Book: Dermatology" + questions to bring
-         2. type a knee concern            -> Orthopedics
-         3. type a vague concern           -> two options shown, "you decide"
-         4. type crushing chest pain       -> red "Seek emergency care now" banner, nothing else runs
+Title:   From a sentence to a door in a few seconds
+On it:   The demo video (about 60 s), full slide. In the corner, the QR code for the live app,
+         taken from the notebook run just before the talk.
+Video:   1. rash example                   -> blue sign "Book an appointment with Dermatology",
+                                              then the reason and questions
+         2. knee example                   -> Orthopedics
+         3. chest pain example             -> red sign "Seek emergency care now", nothing else runs
+         4. optional: ringing ears example -> amber sign, two options, "you decide"
+            (this clip only appears with the from-scratch router; see the check list)
 Say:     Gradio Spaces on Hugging Face now need a paid plan, so the app runs from a Colab notebook.
 
 
 SLIDE 8 — WHEN IT ISN'T SURE (Akshara, 1 min)
 Title:   When the router is unsure, it shows two options and lets the user decide
-On it:   Two screenshots side by side: a confident result and an unsure one.
+On it:   Two screenshots side by side: a blue sign (one answer) and an amber sign (two options).
          One line: unsure = top confidence below a cutoff, or the top two close together.
+         Small text: the cutoffs are placeholders until they are tuned on our dev posts.
 Say:     A confident wrong answer is the worst outcome for a routing tool. So an unsure result
          never pretends to be one answer, and "Start with a GP" is the fallback.
 
@@ -94,12 +105,14 @@ On it:   Went well
            - rules-first design: the emergency path is readable and cited
            - a public set let the whole app work before our own labels existed
          Went poorly
-           - the public labels are noisy: "my gums bleed when I brush" -> Ob-Gyn at 94–96%
-           - fine-tuned routers are over-confident (98–99%), so the unsure cutoffs need tuning
-           - we dropped redaction to keep the scope honest
+           - the public set only knows "bleeding" as an Ob-Gyn word: the fine-tuned routers send
+             "my gums bleed when I brush" to Ob-Gyn at 94–96%
+           - fine-tuned routers are over-confident (98–99% on easy inputs), so the two-option
+             state rarely appears until the cutoffs are tuned
+           - we dropped redaction to focus on routing
          Next
-           - results on our own 150 test posts, against "always GP" and a human baseline
-             (international students picking a doctor for the same posts)
+           - stage 2: train on our own posts, then report results on our own 150 test posts,
+             against "always GP" and against the from-scratch router
            - tune the unsure cutoffs on dev
 Say:     The gums example is our favourite failure: the model is fluent and wrong, which is
          why the test set is our own posts and not the public data.
@@ -111,14 +124,23 @@ CHECK BEFORE PRESENTING (not for the slides)
 
 True today:
   - every number on slide 6, the 11 rules and their sources, the 10,366 / 6,252 counts,
-    the label set, the gums example, the two result states.
+    the label set, the gums example, the three sign colours.
+  - Qwen writes the reason and questions whenever the app runs with it (the Colab notebook on a
+    GPU, or --llm locally).
 
 Only true once the work is finished:
   - Slide 5 "we labelled": true once the 600 posts are labelled. If it isn't done by the talk,
     say "we are labelling".
-  - Slide 6 "Qwen writes the explanation": true now when the app runs with Qwen (the Colab notebook on a GPU, or --llm locally).
-  - Slide 7 QR code: needs the Colab notebook and a live link.
   - Slide 9 has no accuracy on your own posts on purpose. Don't add one until it is measured.
+
+Practical:
+  - QR code: it is new on every launch and dies when the notebook stops. Run the notebook
+    10-15 minutes before the talk and paste that run's QR code into slide 7.
+  - Timing: a result took about 3 seconds with Qwen on the Mac. It was not timed on Colab.
+  - The amber two-option sign (video clip 4, slide 8) does not appear with the fine-tuned router
+    yet. To capture it, run locally with the from-scratch router:
+      DOCCOMPASS_ROUTER=tfidf_stage1 python -m doccompass.app --llm
+    and say in the talk that this clip uses the from-scratch router.
 
 Likely questions: Why not an LLM for everything? How do you know your labels are right?
 What stops it giving medical advice? What about the emergencies the rules miss?

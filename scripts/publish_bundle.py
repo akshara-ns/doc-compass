@@ -54,14 +54,15 @@ Labels: {", ".join(LABELS)}.
 
 Stage 1 only: 6,252 unique comments from *Patient Comments and Specialist Types*
 (Mendeley Data, DOI 10.17632/2twgjzpn82.2, CC BY 4.0), with its 68 symptom categories
-remapped to the labels above. These are short, one-sentence comments.
+remapped to the labels above. These are short, one-sentence comments, so treat results
+on this set as a sanity check only.
 
 ## Results
 
 On {held['n']} held-out comments from that same public set, the fine-tuned router scores
 {held['top1']:.1%} top-1 (95% CI {low:.1%}–{high:.1%}), {held['top3']:.1%} top-3 and
-{held['macro_f1']:.3f} macro-F1. This says how well it fits the public data, not how it
-does on longer real-world posts.
+{held['macro_f1']:.3f} macro-F1. The comments are short and similar to each other, so this is an easy score:
+it says how well the router fits the public data, not how it does on real posts.
 
 ## Limits
 

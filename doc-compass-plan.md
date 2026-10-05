@@ -1,4 +1,4 @@
-# Which Doctor Do I Book?
+# Doc Compass: project plan
 
 **Project 1 · plan of record · v2, revised after the feasibility check on 27 Sep 2026 · updated 4 Oct 2026**
 
@@ -11,8 +11,9 @@ A specialist router. Describe a health concern in plain language and get told wh
 | GUI | Gradio app. Where it's hosted is decided later (Gradio Spaces on Hugging Face now need a paid plan) |
 | Model types | All three: from scratch, fine-tuned, off-the-shelf (the brief asks for at least two) |
 | Focus | Routing. Redaction is out of scope for now: we assume users type relevant, non-identifying text. A simple rule-based scrub may be added for completeness, and full redaction later if time allows |
-| Manual data | 600 labelled posts (400 train / 50 dev / 150 test), plus a human-baseline form (placeholder) |
-| Public data | Patient Comments and Specialist Types, remapped to our labels, for stage-1 training only |
+| Manual data | 600 labelled posts (400 train / 50 dev / 150 test) |
+| Headline result | The routers against "always GP" and against each other on our own 150 test posts |
+| Stage-1 data | Patient Comments and Specialist Types, a public set remapped to our labels. Used for stage-1 training only, never as the test set |
 | Annotation effort | ≈ 7 person-hours across both of us; 60 of the 150 test posts are labelled by both of us for Cohen's κ |
 | Completion estimate | ≈ 65% with this scope (the v1 scope was ≈ 25% in one week) |
 
@@ -42,7 +43,7 @@ For Akshara: the changes since the 27 Sep check-in, newest decisions first.
 | v1 plan | Problem found | v2 plan |
 |---|---|---|
 | Train routers on posts scraped from specialty subreddits (distant supervision) | Reddit's Data API Terms §3.2 forbid "using User Content to train a machine learning or AI model without the express permission of rightsholders"; the Developer Terms §4.2 and User Agreement ban scraping. New API apps need manual approval since Nov 2025 (weeks). Six of the planned subreddits are for professionals only, r/ENT is an entheogen community, r/Urology doesn't exist, and the patient-facing replacements are condition subreddits whose posts name the answer. | Stage 1 on the public Patient Comments set, remapped to our labels; stage 2 on our own gold training split. MedRedQA is not used: its labels are weak and it would cost time we don't have. |
-| Headline metric: self-routing baseline (subreddit chosen vs gold label) | Every MediQ_AskDocs post comes from one general forum, so there is nothing to compare. It also depended on the subreddit data above. | **Human baseline:** 10–15 international students each pick a doctor for 20 test posts. The model has to beat them. |
+| Headline metric: self-routing baseline (subreddit chosen vs gold label) | Every MediQ_AskDocs post comes from one general forum, so there is nothing to compare. It also depended on the subreddit data above. | **Headline:** the fine-tuned routers against "always GP" and against the from-scratch router, on our own 150 test posts. A human baseline (students picking a doctor for the same posts) was planned and is dropped for lack of time. |
 | Gold set fully held out; nothing trained on it | Without distant supervision there is no other routing training data. | Split the 600 by post: 400 train, 50 dev, 150 test. The test split is never trained on or tuned against. |
 | Scrape iCliniq specialty sections as a fallback | iCliniq's Terms of Use forbid scraping "for commercial or any other purpose whatsoever"; HF copies have no specialty field. | Dropped. |
 | ai4privacy for PII augmentation | Custom licence: redistribution and derivative works need written permission. A public model trained on it is a derivative. | Use `nvidia/Nemotron-PII` (CC BY 4.0) if full redaction comes back later. |
@@ -67,7 +68,7 @@ For Akshara: the changes since the 27 Sep check-in, newest decisions first.
 
 **Decide later**
 
-- **Human baseline.** A Google Form where 10–15 international students pick a specialty for 20 posts. Consent wording, and whether to show real posts or paraphrases, are still to be settled.
+- **Human baseline.** Dropped for now: a form where international students pick a specialty for the same posts. It would be a good follow-up.
 - Publishing the gold labels on HF as a labels-only dataset (labels + MediQ ids, no text): not required.
 - Report format and length, and whether the GenAI log has a template.
 
@@ -99,7 +100,7 @@ No user text is stored.
 **Doing it well** means three things: it routes correctly more often than our target users do on their own; it never delays an emergency; and it is fast enough to use.
 
 **Measured by:**
-- **Headline:** top-1 and top-3 accuracy of the model vs the human baseline (international students' picks) on the same test posts
+- **Headline:** top-1 and top-3 accuracy of the fine-tuned routers on our own 150 test posts, against an "always GP" baseline and against the from-scratch router
 - Top-1 / top-3 accuracy and macro-F1 on the 150-post test split, with exact intervals, split clear vs ambiguous, compared with an "always GP" baseline
 - Emergency recall reported on its own line, targeting close to 100%
 - How often the unsure state fires, and top-2 accuracy within it (a hit counts if either option matches the primary or alternate label)
@@ -109,8 +110,7 @@ No user text is stored.
 ### Requirement 2 — Manual dataset
 
 - **Routing labels, 600 posts:** primary specialty plus an optional alternate, urgency tier, ambiguous flag. Split by post into 400 train / 50 dev / 150 test. Posts that aren't a "which doctor" question are skipped, so the pool is larger than 600.
-- **Sampling:** the test posts are a plain random sample of the pool; the train and dev posts are chosen so that each specialty has enough examples.
-- **Human baseline:** 10–15 international students × 20 test posts, collected with a consent notice, following the class data exercise.
+- **Sampling:** the test posts are a plain random sample of the pool. Most train posts are chosen so that each specialty has enough examples; 100 are random. The 50 dev posts come from those random ones only, so the cutoffs tuned on dev see the same label mix as the test set. `data/manual/pool.ids.csv` records how each post was drawn.
 - Public data (Patient Comments) and synthetic data (for example handwritten emergency cases for testing the red-flag rules) are stored apart from the manual labels and don't count toward them.
 
 ### Requirement 3 — Model types
@@ -158,7 +158,7 @@ Checked on 27 Sep 2026 against the Hugging Face API, dataset files, papers and l
 | Dataset | Size | What it is | Licence | Decision |
 |---|---:|---|---|---|
 | `stellalisy/MediQ_AskDocs` | 10,366 unique posts (20,000 / 3,210 / 620 rows in `original/`; 1,971 posts appear in more than one of MediQ's splits) | Real r/AskDocs posts 2013–2021, verbatim; chat format (`id, system, messages, context, question`); no subreddit, flair or specialty; some `u/` handles and image links | MIT on the card; Reddit origin | **Post pool for the 600.** Dedupe on text, skip `synthetic/`, ignore MediQ's splits. 1,309 posts carry more than one `id` root, so keep one id per post |
-| Patient Comments and Specialist Types (Mendeley Data, DOI 10.17632/2twgjzpn82.2) | 5,906 + 2,535 rows; 6,252 unique comments after our mapping, emoji removal and dedupe | Short first-person comments (median 13 words) in 68 symptom categories, mapped to 29 specialist types by a fixed dictionary | CC BY 4.0 | **Stage-1 training data, kept apart from our manual labels.** Remapped to our label set (`docs/label-set.md`). The label comes from the category, not the comment; 85% of comments contain emoji; 339 of its 2,535 test comments also appear in its train file, so we ignore its split |
+| Patient Comments and Specialist Types (Mendeley Data, DOI 10.17632/2twgjzpn82.2) | 5,906 + 2,535 rows; 6,252 unique comments after our mapping, emoji removal and dedupe | Short first-person comments (median 13 words) in 68 symptom categories, mapped to 29 specialist types by a fixed dictionary | CC BY 4.0 | **Stage-1 training data, kept apart from our manual labels.** The comments are short and alike, so results on it are a sanity check only. Remapped to our label set (`docs/label-set.md`). The label comes from the category, not the comment; 85% of comments contain emoji; 339 of its 2,535 test comments also appear in its train file, so we ignore its split |
 | `ildpil/text-anonymization-benchmark` (TAB) | 1,268 ECHR court judgments | Character offsets, direct / quasi / no-mask, several annotators per document | MIT | **Only if full redaction comes back.** Schema, CRF training (train split), benchmark (test split). 1,014 / 127 / 127 documents; test documents have several annotators |
 | `nvidia/Nemotron-PII` | 100k train + 100k test rows: 50k documents per split, each in a US and an international version (the card counts documents) | Synthetic documents in 50+ domains including healthcare, 55+ PII labels | CC BY 4.0 | **Only if full redaction comes back.** CRF training, in `data/synthetic`. Mostly structured records; 1,860 healthcare free-text documents in train |
 | `bagga005/medredqa` (mirror of CSIRO MedRedQA) | ≈ 40.8k / 5.1k / 5.1k | Real r/AskDocs posts; `occupation` = flair of the answering doctor (e.g. "Physician - Dermatologist") | CC BY-NC-SA 4.0 upstream; download asks you to confirm ethics approval | **Not used (decided 4 Oct), to save time.** Weak labels: the flair says who answered, not where to book, and only ≈ 12.8k of 50,991 rows name a bookable specialty (38% of those dermatology). 707 MediQ posts appear in it word for word: dedupe against our dev and test splits |
@@ -198,7 +198,6 @@ Checked on 27 Sep 2026 against the Hugging Face API, dataset files, papers and l
 - [ ] Ablation: TF-IDF vs the two encoders; gold only vs public only vs public then gold; latency
 - [ ] Emergency recall on handwritten cases, plus the false-alarm rate on the labelled posts
 - [ ] Cohen's κ on the 60 double-labelled posts; error analysis
-- [ ] Human-baseline form, if there is time (placeholder)
 
 ### 8 Oct · Ship and write
 - [ ] Final app: disclaimer, "Start with a GP" always visible, made-up examples only, no input retained
@@ -211,7 +210,7 @@ Checked on 27 Sep 2026 against the Hugging Face API, dataset files, papers and l
 
 | Risk | Mitigation |
 |---|---|
-| Annotation runs long | The floor is 500 posts (the brief's text). Cut the train posts first, never the hand-labelled test posts. |
+| Annotation runs long | Keep at least 500 labelled posts that one of us has looked at: the 150 test posts plus 350 train and dev posts. Cut the double-labelled set before anything else. |
 | The public set's labels are noisy and its style is unlike real posts (short, emoji, slang) | Strip emoji; treat it as stage 1 only; check on dev that public-then-gold beats gold alone, and drop stage 1 if it doesn't. |
 | The LLM we pick is unavailable or too slow | Template-only rationale; the rest of the pipeline doesn't depend on the LLM. |
 | Rare specialties get very few of the 150 random test posts | Report per-class counts and exact intervals; lead with overall and macro numbers; merge labels if a class is nearly empty. |
