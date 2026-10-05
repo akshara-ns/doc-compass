@@ -26,7 +26,8 @@ Current figure: `docs/checkin/checkin_figure_v3.png` (4 Oct). The 27 Sep check-i
 **Built and working**
 
 - **The app, end to end:** emergency rules → scrub → router → explanation, in a Gradio interface. It runs locally and from the Colab notebook `notebooks/doc_compass_app.ipynb`.
-- **Emergency rules:** 11 written rules, each quoting a warning sign published by MedlinePlus (US National Library of Medicine) or the CDC.
+- **Emergency check, in two layers:** 11 written rules, each quoting a warning sign published by MedlinePlus (US National Library of Medicine) or the CDC. When no rule fires and Qwen is loaded, Qwen is shown the full published list and asked whether the message describes any of those signs happening now. Either one firing shows the emergency sign.
+- **Emergency check, measured (5 Oct).** On 362 real r/AskDocs posts with clinician-derived urgency (PMR-Reddit), 38 of them emergencies: the rules alone miss 26 (68%); rules plus the Qwen check miss 13 (34%) and wrongly flag 20% of ordinary posts. On 80 short cases we wrote, rules plus Qwen miss 1 of 40. Real emergencies are mostly about a clinical pattern, not wording, so the check is described as catching clearly stated warning signs, not as detecting emergencies. We also tried trained classifiers; none was usable. Full tables and caveats: `docs/emergency-check-results.md`.
 - **Stage 1 for all three routers,** trained on the public Patient Comments set and scored on the same 938 held-out comments from it:
 
   | Router | Type | Top-1 (95% CI) | Top-3 | Macro-F1 |
@@ -106,7 +107,7 @@ Current figure: `docs/checkin/checkin_figure_v3.png` (4 Oct). The 27 Sep check-i
 
 ## How a request moves through the system
 
-1. **Red-flag check** — Eleven written rules scan the raw text first, each quoting a published warning sign (MedlinePlus, CDC). Emergency symptoms short-circuit straight to "Seek emergency care now" and nothing else runs. A plain negation ("no chest pain") cancels a match; past events ("I had chest pain last year") still fire. *(Rules, deliberately not learned)*
+1. **Red-flag check** — Eleven written rules scan the raw text first, each quoting a published warning sign (MedlinePlus, CDC). A plain negation ("no chest pain") cancels a match; past events ("I had chest pain last year") still fire. If no rule fires, Qwen gets a second look for wording the rules can't match. Either one firing short-circuits straight to "Seek emergency care now" and nothing else runs. *(Written rules first; an off-the-shelf model as the safety net)*
 2. **Scrub (optional)** — Simple rules remove obvious identifiers (`u/` handles, emails, phone numbers, links) and show what was removed. We otherwise assume the input is relevant and non-identifying. *(Rules; full redaction is a later extension)*
 3. **Route** — Top-3 bookable specialties with confidence. When the router is unsure (the top probability is below τ, or the top two are close), the app doesn't give one answer: it shows the top two as alternatives, says what separates them, and lets the user decide, with "Start with a GP" as the fallback. Both cutoffs are tuned on dev. *(TF-IDF + logistic regression · DistilRoBERTa vs BiomedBERT, fine-tuned in two stages)*
 4. **Explain** — One sentence in a fixed pattern ("You described …, and Dermatology looks after …") and three questions to think about before the visit, written from the concern text and the chosen doctor only. The stated choice and its confidence always come from the router. The text is rejected if it diagnoses, guesses at a cause, uses numbers, names a medicine, or mentions a different kind of doctor; after one retry the app uses fixed wording. *(Qwen2.5-1.5B-Instruct, used as-is)*
@@ -125,7 +126,7 @@ No user text is stored.
 
 **Measured by:**
 - **Headline:** top-1 and top-3 accuracy and macro-F1 of the fine-tuned routers on our own 150 test posts, with exact intervals, against an "always GP" baseline and against the from-scratch router; also split clear vs ambiguous
-- Emergency recall on handwritten emergency cases, reported on its own line, plus the false-alarm rate on our labelled posts
+- Missed emergencies on cases we wrote ourselves (the costly error, so reported first), then false alarms on those cases and on our labelled posts
 - How often the unsure state fires, and top-2 accuracy within it (a hit counts if either option matches the primary or alternate label)
 - Label quality: Cohen's κ on 60 double-labelled test posts
 - Latency per request
@@ -223,7 +224,8 @@ Checked on 27 Sep 2026 against the Hugging Face API, dataset files, papers and l
 ### 7 Oct · Evaluate
 - [ ] Routing on the 150-post test split: top-1, top-3, macro-F1, exact intervals, clear vs ambiguous, vs "always GP"
 - [ ] Ablation: TF-IDF vs the two encoders; gold only vs public only vs public then gold; latency
-- [ ] Emergency recall on handwritten cases, plus the false-alarm rate on the labelled posts
+- [x] Missed emergencies and false alarms on 80 cases we wrote (`data/synthetic/emergency_cases.csv`)
+- [ ] False-alarm rate of the emergency check on the labelled posts
 - [ ] Cohen's κ on the 60 double-labelled posts; error analysis
 
 ### 8 Oct · Ship and write

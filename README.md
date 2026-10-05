@@ -10,9 +10,11 @@ CMU 24-679 Project 1
 
 ```mermaid
 flowchart LR
-    A([Student types a concern<br/>in plain language]) --> B{Red-flag<br/>rules}
-    B -- emergency --> E[["Seek emergency care now"]]
-    B -- no flag --> F[Top-3 specialties<br/>with confidence]
+    A([Student types a concern<br/>in plain language]) --> B{Written<br/>emergency rules}
+    B -- rule fires --> E[["Seek emergency care now"]]
+    B -- no rule fires --> Q{Language-model<br/>emergency check}
+    Q -- flags it --> E
+    Q -- clear --> F[Top-3 specialties<br/>with confidence]
     F -- unsure --> U[Two options shown,<br/>student decides]
     F --> G[Short reason +<br/>questions to bring]
     U --> G
@@ -22,6 +24,29 @@ flowchart LR
 ```
 
 "Start with a GP" is always one of the options shown. Nothing the student types is stored.
+
+## Results so far
+
+**Routers, stage 1.** Trained on the public Patient Comments set and scored on the same 938 held-out comments from it. The three are tied, and this is an easy score because the comments are short and alike. Stage 2 (training on our own labelled posts) and the test on our own posts are still to come.
+
+| Router | Type | Top-1 (95% CI) | Top-3 | Macro-F1 |
+|---|---|---|---|---|
+| TF-IDF + logistic regression | from scratch | 94.0% (92.3–95.5) | 98.6% | 0.902 |
+| DistilRoBERTa | fine-tuned | 94.3% (92.7–95.7) | 99.0% | 0.908 |
+| BiomedBERT | fine-tuned | 94.2% (92.6–95.6) | 98.8% | 0.904 |
+
+**Emergency check.** Two layers since 5 Oct: the written rules, then a Qwen check for wording the rules miss. A missed emergency is the costly error, so it is reported first.
+
+| Tested on | Option | Missed emergencies | False alarms |
+|---|---|---|---|
+| 362 real posts with clinician-derived urgency, 38 emergencies | Rules alone | 26 of 38 (68%) | 33 of 293 (11%) |
+| | **Rules plus Qwen (the app)** | **13 of 38 (34%)** | **58 of 293 (20%)** |
+| 80 short cases we wrote, 40 emergencies | Rules alone | 25 of 40 (62%) | 4 of 40 (10%) |
+| | **Rules plus Qwen (the app)** | **1 of 40 (2%)** | **4 of 40 (10%)** |
+
+The check catches clearly stated warning signs; it does not detect emergencies. Full tables, the datasets and classifiers we tried, and why this is hard: [docs/emergency-check-results.md](docs/emergency-check-results.md).
+
+**Explanation.** On 16 test inputs, Qwen wrote 15 explanations that passed every check; the other fell back to fixed wording.
 
 ## Set up
 
@@ -35,6 +60,7 @@ python scripts/train_tfidf.py      # trains the from-scratch router on the publi
 python scripts/train_encoder.py --model distilroberta   # fine-tuned router, a few minutes on a laptop
 python scripts/train_encoder.py --model biomedbert
 pytest                             # checks the rules, the scrub and the pipeline
+python scripts/check_emergency.py --llm --real   # missed emergencies and false alarms for the emergency check
 ```
 
 ## Run
@@ -49,7 +75,7 @@ The labelling tool shows one post at a time and saves to `data/manual/NAME.label
 
 ## How it works
 
-1. **Red-flag check**: written rules, each citing a published warning sign; emergencies go straight to "Seek emergency care now"
+1. **Emergency check**: 11 written rules, each citing a published warning sign (MedlinePlus, CDC). If none fires and Qwen is loaded, Qwen is shown the full published list and asked whether the message describes any of those signs happening now. Either one firing goes straight to "Seek emergency care now"
 2. **Scrub**: simple rules remove handles, emails, phone numbers and links
 3. **Route**: TF-IDF + logistic regression, and fine-tuned DistilRoBERTa vs BiomedBERT. When the router is unsure it shows two options instead of one
 4. **Explain**: Qwen2.5-1.5B-Instruct writes a one-sentence reason and three questions, from the concern and the routing result only. Its text is checked before it is shown, and fixed wording is the fallback
@@ -57,6 +83,8 @@ The labelling tool shows one post at a time and saves to `data/manual/NAME.label
 ## Demo notebook
 
 `notebooks/doc_compass_app.ipynb` runs the app in Colab and prints a public link with a QR code. It downloads the code and models from a public Hugging Face repo, which `python scripts/publish_bundle.py` uploads (run `hf auth login` first).
+
+Use a T4 GPU runtime: without a GPU, Qwen isn't loaded, so only the written rules check for emergencies and the explanation uses fixed wording. The notebook is pinned to one version of the app, so after the app changes, upload the notebook again, restart the runtime and run all cells. The public link and QR code are new on every run.
 
 | Path | What it holds |
 |---|---|
@@ -66,6 +94,7 @@ The labelling tool shows one post at a time and saves to `data/manual/NAME.label
 | `tools/annotate.py` | the labelling tool |
 | `tests/` | pytest checks |
 | `docs/label-set.md` | the label set and the public-data mapping |
+| `docs/emergency-check-results.md` | missed emergencies and false alarms for the emergency check |
 | `doc-compass-plan.md` | the full plan |
 | `docs/checkin/` | system figures |
 
