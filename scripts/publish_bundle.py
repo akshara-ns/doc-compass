@@ -15,15 +15,19 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from doccompass import paths
 from doccompass.labels import LABELS
 
-ENCODER = "distilroberta_stage1"
-FILES = ["doccompass/*.py", f"checkpoints/{ENCODER}/*", "checkpoints/tfidf_stage1.joblib", "requirements.txt"]
+ENCODER = "biomedbert_gold"  # best on our dev posts (docs/routing-results.md)
+FILES = ["doccompass/*.py", f"checkpoints/{ENCODER}/*", "checkpoints/tfidf_stage2.joblib", "requirements.txt"]
 SKIP = ["**/__pycache__/**", "**/training_args.bin"]
+
+# Scored once on our 115 test posts on 8 Oct (scripts/evaluate_routing.py test --tau 0.25 --margin 0.05).
+TEST = {"n": 115, "top1": 0.609, "top1_ci": (0.513, 0.698), "top3": 0.904, "macro_f1": 0.611,
+        "always_gp_top1": 0.409, "tfidf_top1": 0.487}
 
 
 def model_card(repo_id: str) -> str:
     metrics = json.loads((paths.MODELS / ENCODER / "metrics.json").read_text())
-    held = metrics["held_out"]
-    low, high = held["top1_ci"]
+    dev = metrics["dev"]
+    low, high = TEST["top1_ci"]
     return f"""---
 license: apache-2.0
 language: en
@@ -45,31 +49,36 @@ without access to the project's GitHub repo.
 | File | What it is |
 |---|---|
 | `checkpoints/{ENCODER}/` | `{metrics['model']['repo']}` fine-tuned (all weights) to route concerns to {len(LABELS)} labels |
-| `checkpoints/tfidf_stage1.joblib` | TF-IDF + logistic regression router, trained from scratch on the same data |
+| `checkpoints/tfidf_stage2.joblib` | TF-IDF + logistic regression router, trained from scratch; the fallback when PyTorch isn't available |
 | `doccompass/` | emergency rules, routers, explanation and the Gradio app |
 
 Labels: {", ".join(LABELS)}.
 
 ## Training data
 
-Stage 1 only: 6,252 unique comments from *Patient Comments and Specialist Types*
-(Mendeley Data, DOI 10.17632/2twgjzpn82.2, CC BY 4.0), with its 68 symptom categories
-remapped to the labels above. These are short, one-sentence comments, so treat results
-on this set as a sanity check only.
+{metrics['train_rows']} real r/AskDocs posts from `stellalisy/MediQ_AskDocs` (MIT on the dataset card; the posts
+come from Reddit), each labelled with the kind of doctor to book. The labels were drafted by an AI
+assistant from a written guideline and used without human review. No post text is in this repo.
+
+The TF-IDF router was trained on the same posts plus *Patient Comments and Specialist Types*
+(Mendeley Data, DOI 10.17632/2twgjzpn82.2, CC BY 4.0), a public set of short comments that
+appear to be generated, with its symptom categories remapped to the labels above.
 
 ## Results
 
-On {held['n']} held-out comments from that same public set, the fine-tuned router scores
-{held['top1']:.1%} top-1 (95% CI {low:.1%}–{high:.1%}), {held['top3']:.1%} top-3 and
-{held['macro_f1']:.3f} macro-F1. The comments are short and similar to each other, so this is an easy score:
-it says how well the router fits the public data, not how it does on real posts.
+On {dev['n']} dev posts the router scores {dev['top1']:.1%} top-1 and {dev['macro_f1']:.3f} macro-F1; that is
+where it was chosen. On {TEST['n']} test posts, scored once, it scores {TEST['top1']:.1%} top-1
+(95% CI {low:.1%}–{high:.1%}), {TEST['top3']:.1%} top-3 and {TEST['macro_f1']:.3f} macro-F1, against {TEST['always_gp_top1']:.1%}
+for always answering "Start with a GP" and {TEST['tfidf_top1']:.1%} for the TF-IDF router. The test labels are
+the same AI-drafted labels, so this measures agreement with that labeller, not with a clinician.
 
 ## Limits
 
-- English only, and trained on short comments. It can be confidently wrong on wording the
-  public set doesn't cover: "my gums bleed when I brush" is routed to Ob-Gyn.
-- The emergency check is a short list of written rules and will miss emergencies phrased
-  in ways the rules don't anticipate. In an emergency call 911.
+- English only, and trained on {metrics['train_rows']} posts, so some labels have few examples (Dentistry has 7).
+- It often names a specialty where the labeller said "Start with a GP" (right on 15 of 47 such test posts).
+- Short or vague messages get low confidence; the app then shows two options instead of one.
+- The emergency check is a short list of written rules, plus a language-model check when one is
+  loaded. It will miss emergencies phrased in ways it doesn't anticipate. In an emergency call 911.
 - Not clinically validated.
 """
 
