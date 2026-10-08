@@ -63,6 +63,19 @@ git commit -m "Sohum's labels so far"
 git push
 ```
 
+## Merge and check agreement
+
+Once both label files are pushed, either of us runs:
+
+```bash
+git pull
+python scripts/merge_labels.py
+```
+
+It prints how often we agree on the shared posts (including Cohen's κ) and writes `data/manual/gold.labels.csv`, one label per post with its split. Where we disagree on a shared post, it adds the post to `data/manual/adjudicated.labels.csv` with both our labels. Talk those through, fill in the `primary` column (and `alternate`, `urgency` and `ambiguous` if you want), run the script again, and commit all three files.
+
+The 50 or so dev posts are fixed in advance from the randomly drawn train posts, so the tool shows them right after the test posts.
+
 ## Time
 
 About a minute per test post and less for train posts, so roughly 3–4 hours each. The 60 shared posts come first. Once we've both finished them, compare a few disagreements to make sure we're reading the guideline the same way, before going on.

@@ -2,8 +2,8 @@
 
 Run:  python tools/annotate.py --annotator sohum
 Your labels go to data/manual/<annotator>.labels.csv, which is safe to commit.
-Test posts come first and are shown with nothing pre-selected. Train and dev posts
-show a first-pass label, if one exists, for you to confirm or change.
+Test posts come first and are shown with nothing pre-selected. Then come the dev candidates,
+then the other train posts; these show a first-pass label, if one exists, to confirm or change.
 """
 
 import argparse
@@ -16,6 +16,7 @@ import pandas as pd
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from doccompass import paths
+from doccompass.gold import dev_candidates
 from doccompass.labels import ANNOTATION_CHOICES, EMERGENCY, LABELS, SKIP, URGENCY
 
 COLUMNS = ["id", "part", "annotator", "primary", "alternate", "urgency", "ambiguous", "draft_primary", "changed_from_draft"]
@@ -23,14 +24,15 @@ NO_ALTERNATE = "(none)"
 
 
 def load_queue(annotator: str) -> pd.DataFrame:
-    """This annotator's posts, test first, with any first-pass labels attached."""
+    """This annotator's posts, test first, then dev candidates, with any first-pass labels attached."""
     if not paths.POOL.exists():
         sys.exit("No pool found. Run: python scripts/prepare_data.py")
     pool = pd.read_csv(paths.POOL)
     mine = pool[pool["annotators"].str.split("+").map(lambda names: annotator in names)]
     if mine.empty:
         sys.exit(f"No posts are assigned to '{annotator}'. Names in the pool: {sorted(set('+'.join(pool['annotators']).split('+')))}")
-    mine = pd.concat([mine[mine["part"] == "test"], mine[mine["part"] != "test"]])
+    dev, train = dev_candidates(pool), mine[mine["part"] != "test"]
+    mine = pd.concat([mine[mine["part"] == "test"], train[train["id"].isin(dev)], train[~train["id"].isin(dev)]])
     if paths.DRAFT_LABELS.exists():
         draft = pd.read_csv(paths.DRAFT_LABELS).add_prefix("draft_").rename(columns={"draft_id": "id"})
         mine = mine.merge(draft, on="id", how="left")

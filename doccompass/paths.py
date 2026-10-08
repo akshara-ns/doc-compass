@@ -14,4 +14,6 @@ PATIENT_COMMENTS = PUBLIC / "patient_comments.csv"
 POOL_IDS = MANUAL / "pool.ids.csv"  # committed: which posts we label, and who labels them
 POOL = MANUAL / "pool.csv"  # local only: the same posts with their text
 DRAFT_LABELS = MANUAL / "draft.labels.csv"  # first-pass labels shown in the labelling tool
+ADJUDICATED = MANUAL / "adjudicated.labels.csv"  # committed: our agreed label where the two of us disagreed
+GOLD = MANUAL / "gold.labels.csv"  # committed: one label per post, with its split, written by scripts/merge_labels.py
 EMERGENCY_CASES = ROOT / "data" / "synthetic" / "emergency_cases.csv"  # written by us to test the emergency check
