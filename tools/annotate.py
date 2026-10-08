@@ -2,8 +2,8 @@
 
 Run:  python tools/annotate.py --annotator sohum
 Your labels go to data/manual/<annotator>.labels.csv, which is safe to commit.
-Test posts come first and are shown with nothing pre-selected. Then come the dev candidates,
-then the other train posts; these show a first-pass label, if one exists, to confirm or change.
+Test posts come first, then the dev candidates, then the other train posts. Every post shows
+its first-pass label, if one exists, to confirm or change; the tool records whether you changed it.
 """
 
 import argparse
@@ -58,13 +58,13 @@ def build(annotator: str) -> gr.Blocks:
             row = labels[post["id"]]
             values = (row["primary"], row["alternate"] or NO_ALTERNATE, row["urgency"] or None, row["ambiguous"] == "True")
             header += " · already saved"
-        elif post["part"] != "test" and isinstance(post.get("draft_primary"), str):
+        elif isinstance(post.get("draft_primary"), str):
             alternate = post.get("draft_alternate")
             urgency = post.get("draft_urgency")
             values = (post["draft_primary"], alternate if isinstance(alternate, str) else NO_ALTERNATE,
-                      urgency if isinstance(urgency, str) else None, False)
+                      urgency if isinstance(urgency, str) else None, str(post.get("draft_ambiguous")) == "True")
             header += f" · first pass: {post['draft_primary']}"
-        else:  # test posts are labelled with nothing pre-selected, urgency included
+        else:  # no first-pass label: nothing pre-selected, urgency included
             values = (None, NO_ALTERNATE, None, False)
         return (position, header, post["text"], *values, message)
 
@@ -76,7 +76,7 @@ def build(annotator: str) -> gr.Blocks:
         if is_routed and urgency is None:
             return show(position, "Pick an urgency too.")
         # Keep the first-pass label that was shown, so we can report how often we changed it.
-        draft = post.get("draft_primary") if post["part"] != "test" else None
+        draft = post.get("draft_primary")
         draft = draft if isinstance(draft, str) else ""
         labels[post["id"]] = {
             "id": post["id"], "part": post["part"], "annotator": annotator, "primary": primary,

@@ -1,0 +1,735 @@
+id,primary,alternate,urgency,ambiguous
+t_cwpygjj,Orthopedics,Start with a GP,routine,False
+t_cx8oetz,Skip,,,False
+t_fcj3u61,Start with a GP,Neurology,routine,False
+t_dmkgin2,Ob-Gyn,Start with a GP,routine,False
+t_cl8m7xd,Urology,Start with a GP,routine,False
+t_ebm78d8,Start with a GP,Cardiology,routine,False
+t_daazroi,Skip,,,False
+t_doseomu,Skip,,,False
+t_chlnubg,Ob-Gyn,Start with a GP,routine,False
+t_dbtbjvy,Neurology,Start with a GP,routine,False
+t_drbm0r7,Cardiology,Start with a GP,routine,False
+t_cuyvq64,Dermatology,Start with a GP,routine,False
+t_facaxad,Start with a GP,Mental health,routine,True
+t_dpxstzm,Start with a GP,Mental health,soon,False
+t_cwqtfov,Skip,,,False
+t_j1iywhi,Start with a GP,,routine,False
+t_cie8adb,Orthopedics,Start with a GP,routine,False
+t_dn2yjti,Start with a GP,,soon,False
+t_dakwrz9,Start with a GP,Mental health,routine,False
+t_ebsz8fz,Neurology,ENT,soon,False
+t_dbriohm,Neurology,Start with a GP,soon,False
+t_eaisre4,Start with a GP,Neurology,soon,True
+t_cuh0z5b,Skip,,,False
+t_cmyewdw,Skip,,,False
+t_cm1w2pc,Skip,,,False
+t_d9xlx3u,Emergency,,emergency,False
+t_cy8px7h,Eye care,Mental health,routine,False
+t_dn5yfwo,Mental health,Start with a GP,routine,False
+t_fap3nil,Skip,,,False
+t_dbrcc45,Skip,,,False
+t_cjnw76h,ENT,Start with a GP,soon,False
+t_clubwgo,Start with a GP,,routine,False
+t_cjfjscr,Skip,,,False
+t_cwzr0tf,ENT,Start with a GP,soon,False
+t_dafkix8,Emergency,Cardiology,emergency,True
+t_horaq99,Skip,,,False
+t_j1mztc7,Gastroenterology,Start with a GP,routine,False
+t_eamj6vl,Start with a GP,,routine,False
+t_cwypo83,Start with a GP,Mental health,routine,False
+t_dara6xy,Skip,,,False
+t_dn4x7gq,Skip,,,False
+t_ea908re,Emergency,,emergency,True
+t_cy0g0eb,Skip,,,False
+t_ghjnh9t,Start with a GP,Urology,soon,False
+t_j0a8hw9,Dermatology,Start with a GP,routine,False
+t_ebklphs,ENT,Start with a GP,routine,False
+t_fbffwrv,Gastroenterology,Start with a GP,routine,False
+t_dqqoo5h,Skip,,,False
+t_fc1vkor,Orthopedics,Start with a GP,routine,False
+t_fa9mv2j,Orthopedics,Start with a GP,soon,False
+t_cxms3ir,Orthopedics,Start with a GP,soon,False
+t_druaq0u,Cardiology,Start with a GP,soon,False
+t_cx5z76l,Urology,Start with a GP,soon,False
+t_doybtij,Skip,,,False
+t_cl7xcp6,ENT,Start with a GP,soon,False
+t_dr5gqwt,Skip,,,False
+t_izekug8,Neurology,Start with a GP,soon,False
+t_chqtsby,Start with a GP,Cardiology,soon,True
+t_j1ify6t,Skip,,,False
+t_dqvrpyq,Skip,,,False
+t_cwkzli8,Start with a GP,Dentistry,routine,False
+t_eagujk2,Start with a GP,Neurology,routine,False
+t_dole9o7,Dermatology,Start with a GP,soon,False
+t_clepiil,Gastroenterology,Start with a GP,soon,False
+t_izkguks,Skip,,,False
+t_cfnbj4p,Start with a GP,Gastroenterology,soon,False
+t_dr8bx2t,Start with a GP,Neurology,soon,True
+t_ci4rm2x,Gastroenterology,Start with a GP,routine,False
+t_cfi0nox,Start with a GP,,soon,False
+t_dr1mh4q,Start with a GP,Urology,soon,False
+t_hqmtelm,Skip,,,False
+t_cmaaqqp,Skip,,,False
+t_ebs1h5q,Dermatology,Start with a GP,routine,False
+t_hog9gz5,Skip,,,False
+t_gh2shu8,Skip,,,False
+t_dbm66af,Start with a GP,Cardiology,soon,False
+t_ckqqxso,Skip,,,False
+t_hpglvxp,Start with a GP,,soon,False
+t_j2fwo5l,Skip,,,False
+t_ch9bada,ENT,Gastroenterology,routine,False
+t_fbps8ho,Emergency,Neurology,emergency,True
+t_fc5dcf7,Emergency,Mental health,emergency,True
+t_da9m6y6,Gastroenterology,Start with a GP,routine,False
+t_fbmhwh1,Start with a GP,Neurology,soon,False
+t_cxiza58,Start with a GP,Dermatology,soon,False
+t_db6nufi,Start with a GP,Dermatology,soon,False
+t_dmwlpil,Orthopedics,Start with a GP,soon,False
+t_do8qrn1,Skip,,,False
+t_cwbrwhm,Skip,,,False
+t_cx8zc5y,Gastroenterology,Start with a GP,routine,False
+t_dnlo7fl,Skip,,,False
+t_cfzhll6,Start with a GP,Urology,soon,False
+t_donzm74,Skip,,,False
+t_ck9fjkg,Gastroenterology,Start with a GP,soon,False
+t_cvtxfmx,Skip,,,False
+t_ebacknb,Emergency,Orthopedics,emergency,True
+t_ckgzcl4,ENT,,routine,False
+t_hok6bqf,Neurology,Start with a GP,soon,False
+t_da9re25,Start with a GP,Cardiology,routine,False
+t_cxxavv5,Orthopedics,Start with a GP,routine,False
+t_do3zulf,Ob-Gyn,Start with a GP,routine,False
+t_hqgl6zj,Ob-Gyn,Start with a GP,soon,False
+t_clc76s1,Start with a GP,Orthopedics,routine,False
+t_cxg3bh3,Skip,,,False
+t_do0wskx,Emergency,Neurology,emergency,False
+t_clq0tbb,Urology,Mental health,routine,False
+t_cvv0bxf,Skip,,,False
+t_cx0eohe,Neurology,Start with a GP,routine,False
+t_cgsykgs,Skip,,,False
+t_drhvp0h,Start with a GP,Urology,soon,False
+t_dmll5h9,Ob-Gyn,,routine,False
+t_cuidmlr,Emergency,Gastroenterology,emergency,True
+t_eb1qcmc,Neurology,Start with a GP,routine,False
+t_dmly42a,Skip,,,False
+t_do7uiig,Start with a GP,,routine,False
+t_cmpk9vk,Skip,,,False
+t_ctqt58d,Neurology,Eye care,soon,False
+t_dmsz1ib,Neurology,Start with a GP,soon,False
+t_j04vj78,Urology,Start with a GP,soon,False
+t_ebq0e1j,Skip,,,False
+t_cjlnf12,Orthopedics,Start with a GP,soon,False
+t_ecxlau0,Neurology,Start with a GP,soon,False
+t_ctrodtc,Skip,,,False
+t_ck31bww,Skip,,,False
+t_ebtt3fb,Skip,,,False
+t_e9nh161,Skip,,,False
+t_d9ylizi,ENT,Start with a GP,routine,False
+t_ecxz507,Ob-Gyn,Start with a GP,routine,False
+t_f9f0bzj,Start with a GP,Urology,soon,False
+t_cwaia3h,ENT,Start with a GP,routine,False
+t_db1p03z,Start with a GP,Gastroenterology,routine,False
+t_dafw8xr,Skip,,,False
+t_cwdt2tz,Gastroenterology,Start with a GP,routine,False
+t_ec6f6vi,Urology,Start with a GP,routine,False
+t_e9d6f3m,Start with a GP,Gastroenterology,routine,True
+t_ctmsswr,Dentistry,Start with a GP,routine,False
+t_cvnq4mp,Skip,,,False
+t_ckli382,Skip,,,False
+t_cwv3z5p,Skip,,,False
+t_cu1v0hd,Skip,,,False
+t_clog1k5,Emergency,Gastroenterology,emergency,False
+t_cy6ay61,Start with a GP,Mental health,routine,False
+t_f9ypyas,Cardiology,Mental health,routine,False
+t_ctpi4in,Start with a GP,Dentistry,routine,True
+t_ecbfh7w,Cardiology,Neurology,soon,False
+t_e9mchgm,Start with a GP,Mental health,routine,False
+t_ggujw2c,Start with a GP,Neurology,routine,True
+t_j0h08pc,Start with a GP,,soon,False
+t_cv7cb7u,Skip,,,False
+t_ctyjzz4,Skip,,,False
+t_daq7owi,Neurology,ENT,routine,False
+t_dnmpya9,Cardiology,Start with a GP,routine,False
+t_ecn6s0h,Orthopedics,Start with a GP,routine,False
+t_db0fuvc,Start with a GP,Ob-Gyn,routine,False
+t_dph05kt,Start with a GP,Mental health,routine,True
+t_cu0f2y1,Emergency,Mental health,emergency,True
+t_dr24bg2,Gastroenterology,Start with a GP,routine,False
+t_cm48io2,Skip,,,False
+t_fcbc5mn,Skip,,,False
+t_cvvcjgp,Skip,,,False
+t_eb32b87,Start with a GP,Mental health,routine,False
+t_cvfmy5o,Start with a GP,Gastroenterology,soon,False
+t_fbxk6hk,Emergency,Ob-Gyn,emergency,True
+t_dqn8uyf,Skip,,,False
+t_cvwk4qn,Skip,,,False
+t_ghcd16j,Gastroenterology,Start with a GP,routine,False
+t_dniedo8,Dermatology,Start with a GP,routine,False
+t_cloed6x,Skip,,,False
+t_ebosf85,Skip,,,False
+t_cx59gcz,ENT,Gastroenterology,routine,False
+t_ean0msh,Neurology,Mental health,soon,False
+t_d9knxzy,Start with a GP,ENT,soon,False
+t_howi28v,Start with a GP,,soon,False
+t_ecpwluc,Gastroenterology,Start with a GP,soon,False
+t_dne9u7h,Start with a GP,Mental health,soon,True
+t_j1w2nmd,ENT,Dentistry,routine,False
+t_cwmyabi,Start with a GP,,routine,False
+t_ckdtlu3,Skip,,,False
+t_dncm7wj,Start with a GP,Neurology,soon,False
+t_cmdmswk,Skip,,,False
+t_e9c3fif,Skip,,,False
+t_cflrjjg,Emergency,Neurology,emergency,True
+t_cvx5vuf,Skip,,,False
+t_drkzk8c,Start with a GP,Gastroenterology,soon,False
+t_cxflo3v,Skip,,,False
+t_dn14bzi,Neurology,Start with a GP,soon,False
+t_clqlldf,Emergency,Gastroenterology,emergency,True
+t_ggye5ts,Neurology,Start with a GP,soon,False
+t_cjfun93,Emergency,Start with a GP,emergency,True
+t_ctyv27k,Skip,,,False
+t_fbpnrkb,Skip,,,False
+t_cmkj2hq,Skip,,,False
+t_ctrb06c,Gastroenterology,Start with a GP,routine,False
+t_cip31xn,Gastroenterology,Start with a GP,soon,False
+t_eafr6g4,Start with a GP,,routine,False
+t_ckzqza2,Skip,,,False
+t_ebnz7bz,Start with a GP,Neurology,routine,False
+t_drz1ixk,Cardiology,Start with a GP,routine,False
+t_cghgqjy,ENT,Start with a GP,soon,False
+t_do3q6ve,Start with a GP,,routine,False
+t_dqd4bpe,Neurology,Start with a GP,routine,False
+t_ecvv9u8,Cardiology,,soon,False
+t_f9i4lge,ENT,Neurology,routine,False
+t_ecls7cc,Neurology,Start with a GP,routine,False
+t_ghn48dw,Urology,Start with a GP,soon,False
+t_dq4cjrt,Skip,,,False
+t_f9nkxsk,Skip,,,False
+t_cwwvr4n,ENT,Start with a GP,soon,False
+t_cvblihz,Skip,,,False
+t_cktrrpb,Mental health,,routine,False
+t_fbdm1j5,Start with a GP,Orthopedics,soon,True
+t_cwbpbmg,Orthopedics,Start with a GP,soon,False
+t_eauq34v,Orthopedics,,routine,False
+t_hoioga4,Emergency,Gastroenterology,emergency,True
+t_dmv3u1t,Start with a GP,Gastroenterology,routine,False
+t_ec5oedz,Eye care,Neurology,routine,False
+t_ebs5g21,Start with a GP,,routine,False
+t_dmzn9mo,Start with a GP,Dentistry,soon,True
+t_cxg3c9h,Mental health,Start with a GP,routine,False
+t_dai4ybt,ENT,,routine,False
+t_eb9cypd,Urology,,routine,False
+t_cy33gkq,Emergency,Start with a GP,emergency,True
+t_dbp9x2j,Orthopedics,Start with a GP,routine,False
+t_cxpdo3t,Emergency,ENT,emergency,True
+t_dbeag14,Eye care,,routine,False
+t_chnd5po,Eye care,Neurology,routine,False
+t_fc9iv21,Dentistry,ENT,routine,False
+t_fca2mbd,Skip,,,False
+t_cli8j6g,Eye care,Start with a GP,soon,False
+t_eaidgrt,Gastroenterology,Start with a GP,soon,False
+t_cuicg6s,Orthopedics,Start with a GP,soon,False
+t_ggug8ji,Mental health,,routine,False
+t_cmqnm4o,Start with a GP,Neurology,routine,False
+t_cmt3zoo,Skip,,,False
+t_domy5yc,Dermatology,,routine,False
+t_fagalu9,Mental health,Start with a GP,soon,False
+t_cizdn8p,Cardiology,Start with a GP,routine,False
+t_hp9aene,Skip,,,False
+t_fb38v3x,Skip,,,False
+t_cvsyruf,Emergency,Start with a GP,emergency,True
+t_cm69eno,Start with a GP,ENT,routine,False
+t_dbe35e0,Mental health,Start with a GP,routine,False
+t_dozqpt5,Eye care,,routine,False
+t_daujuvs,ENT,Start with a GP,soon,False
+t_cvfnfpq,Neurology,Start with a GP,routine,False
+t_f933i93,Dermatology,,routine,False
+t_ecwgw93,ENT,Start with a GP,routine,False
+t_fadg7y0,Start with a GP,Dermatology,routine,False
+t_dmr9zb7,Gastroenterology,Start with a GP,routine,False
+t_d9g7it3,Emergency,,emergency,True
+t_fana8oo,Cardiology,Start with a GP,soon,False
+t_e9rx44w,Urology,Start with a GP,routine,False
+t_eb8x2i2,Orthopedics,,soon,False
+t_clmf1vv,Start with a GP,,routine,False
+t_ci24kc1,Start with a GP,Cardiology,soon,True
+t_cibleb1,ENT,,routine,False
+t_dnu6xp4,Start with a GP,Cardiology,soon,True
+t_cg5gli5,ENT,Dentistry,routine,False
+t_cfgovqj,Start with a GP,Cardiology,routine,False
+t_dmzclx0,Gastroenterology,Start with a GP,soon,False
+t_dbosmn9,Mental health,,routine,False
+t_cuwefdb,Urology,Dermatology,routine,False
+t_dpdme5w,Urology,,routine,False
+t_dqe3xl8,ENT,,soon,False
+t_cju6tw6,Dermatology,Urology,routine,False
+t_cwpk8d8,Orthopedics,Neurology,soon,False
+t_j0kig9p,Urology,Start with a GP,soon,False
+t_dbtf6yw,Gastroenterology,Start with a GP,soon,False
+t_drdd8vo,Start with a GP,Cardiology,soon,False
+t_daapgns,Dermatology,,routine,False
+t_dqnf8sn,Ob-Gyn,Start with a GP,routine,False
+t_cvbcldx,Dermatology,Urology,soon,False
+t_cven7t9,ENT,Gastroenterology,routine,False
+t_cv8y77r,Skip,,,False
+t_cmyvqn5,ENT,,soon,False
+t_ghgupu0,Ob-Gyn,Start with a GP,soon,False
+t_cjta6xh,Skip,,,False
+t_dp994q0,Ob-Gyn,,routine,False
+t_e9ja5bc,ENT,,routine,False
+t_j1qae75,Emergency,,emergency,True
+t_d9p1fpl,Start with a GP,Gastroenterology,routine,False
+t_cl1ux1e,Start with a GP,Ob-Gyn,routine,True
+t_dp2mwwk,Gastroenterology,Dentistry,routine,False
+t_chnjyag,Skip,,,False
+t_cvnbh2v,Ob-Gyn,,routine,False
+t_cupi7d9,Start with a GP,Gastroenterology,soon,False
+t_chitiob,Skip,,,False
+t_cjkc3sw,Neurology,Start with a GP,routine,False
+t_dqfy4s2,Skip,,,False
+t_cy3sa22,Orthopedics,,routine,False
+t_cvat486,Neurology,,soon,False
+t_dmxd8oi,Cardiology,Start with a GP,routine,False
+t_dnuma29,Start with a GP,Cardiology,routine,True
+t_cilwo2a,Ob-Gyn,Start with a GP,routine,False
+t_dpz8ugl,Skip,,,False
+t_cx8m721,Skip,,,False
+t_doirnfo,Start with a GP,Mental health,routine,True
+t_ecj2qnr,Gastroenterology,Dentistry,routine,False
+t_cxejkk9,Start with a GP,,routine,False
+t_cxt17e5,Emergency,,emergency,True
+t_cwt6pc5,Ob-Gyn,Start with a GP,routine,False
+t_dpn89nk,Orthopedics,Start with a GP,soon,False
+t_cwz8rvd,ENT,,routine,False
+t_cm65btk,Orthopedics,Start with a GP,routine,False
+t_dnh17m5,Ob-Gyn,,routine,False
+t_fasc27j,Start with a GP,,soon,False
+t_ebnzzrb,Skip,,,False
+t_cmi36uk,Ob-Gyn,Start with a GP,soon,False
+t_cih3y0t,Cardiology,Start with a GP,routine,False
+t_cj7ocwg,Neurology,,soon,False
+t_cxs8pso,Skip,,,False
+t_izam2id,Mental health,Start with a GP,soon,False
+t_cuggawx,Skip,,,False
+t_ci976l4,Gastroenterology,Start with a GP,soon,False
+t_cyfzu5c,Dermatology,,routine,False
+t_doyc691,Eye care,,soon,False
+t_cxfw5b6,Gastroenterology,Start with a GP,soon,False
+t_cld2mwj,Gastroenterology,Start with a GP,routine,False
+t_cgg98ya,Skip,,,False
+t_cjr8omf,Mental health,,soon,False
+t_fafi40g,Neurology,,soon,False
+t_j0lb4iz,Emergency,,emergency,False
+t_cm7glk7,Cardiology,Start with a GP,routine,False
+t_ecxqeec,Start with a GP,Neurology,soon,True
+t_daogays,Orthopedics,,routine,False
+t_fa2k3lx,Orthopedics,,soon,False
+t_cjk54v3,Gastroenterology,,soon,False
+t_cg7chig,Emergency,,emergency,True
+t_cmc6313,ENT,Dentistry,routine,False
+t_dpj0489,Gastroenterology,Start with a GP,soon,False
+t_dau44f6,Emergency,,emergency,True
+t_ck1b4lm,Orthopedics,Start with a GP,routine,False
+t_cljkhpc,Ob-Gyn,,routine,False
+t_d9zgf7e,Skip,,,False
+t_eamdjta,Gastroenterology,Start with a GP,routine,False
+t_cxpl1vv,Urology,,soon,False
+t_d9n48ie,Skip,,,False
+t_dq2rm6m,Emergency,,emergency,True
+t_dnr2do3,ENT,,routine,False
+t_cn1v6om,Skip,,,False
+t_cxuoomv,Mental health,,routine,False
+t_cu0kke3,Eye care,Neurology,routine,False
+t_cxwlrux,Ob-Gyn,,soon,False
+t_d9glgg4,ENT,Start with a GP,soon,False
+t_ecx378w,Orthopedics,,routine,False
+t_cu1wf8o,Gastroenterology,Start with a GP,routine,False
+t_e9xkftz,Skip,,,False
+t_fb8vach,Start with a GP,Orthopedics,routine,False
+t_cibm0hl,Cardiology,,soon,False
+t_ea71znk,Emergency,,emergency,True
+t_cu6xg09,Skip,,,False
+t_dnqdk6e,Start with a GP,Gastroenterology,routine,False
+t_cxicoxk,Orthopedics,,routine,False
+t_ghmetph,Gastroenterology,Start with a GP,soon,False
+t_dotntao,Start with a GP,Neurology,routine,False
+t_ch3zehr,Neurology,,soon,False
+t_fb8h5bi,Neurology,Eye care,soon,False
+t_doa6jjb,Gastroenterology,Start with a GP,routine,False
+t_f9ye1tm,Ob-Gyn,,routine,False
+t_dalmho9,Start with a GP,,routine,False
+t_cik958o,Dermatology,,routine,False
+t_fb26r34,Skip,,,False
+t_dn1hgul,Emergency,,emergency,True
+t_cmdc3i3,Cardiology,Start with a GP,routine,False
+t_cvelwb2,Skip,,,False
+t_fcae9cj,Start with a GP,,soon,False
+t_cfgia5s,Dermatology,,soon,False
+t_cwfzx8r,Skip,,,False
+t_cu1yjpt,Start with a GP,Gastroenterology,soon,False
+t_fcna8cy,Emergency,Mental health,emergency,True
+t_dq7erzm,Skip,,,False
+t_ec0ul8q,Emergency,Mental health,emergency,False
+t_drwdqi4,Urology,Start with a GP,soon,False
+t_cvel776,ENT,,routine,False
+t_cu8e7cq,Start with a GP,Orthopedics,routine,False
+t_cljakf2,Skip,,,False
+t_dn4w5tj,Ob-Gyn,Start with a GP,soon,False
+t_dngtts9,Start with a GP,Gastroenterology,routine,False
+t_dbatmfm,Skip,,,False
+t_eakc2of,Urology,Start with a GP,routine,False
+t_darw6cb,Skip,,,False
+t_cwtwafb,Eye care,,routine,False
+t_dojlmcm,Mental health,,soon,True
+t_dp04jec,Urology,Neurology,routine,False
+t_cuzg28u,Start with a GP,Urology,soon,True
+t_dptdq77,Mental health,Start with a GP,routine,False
+t_dabu9fo,Start with a GP,Gastroenterology,soon,False
+t_cv5ewj3,Ob-Gyn,,routine,False
+t_dmxrqk1,Gastroenterology,Start with a GP,soon,False
+t_cxsczn8,Neurology,Start with a GP,soon,False
+t_darg0wi,Neurology,Start with a GP,soon,False
+t_cmb6fjd,Skip,,,False
+t_dq1rg9w,Skip,,,False
+t_dqjp51y,Start with a GP,Cardiology,routine,True
+t_chmnii8,Start with a GP,Urology,routine,False
+t_fadrli3,Skip,,,False
+t_fc7q4jj,Urology,Start with a GP,routine,False
+t_da12sfo,Neurology,Start with a GP,routine,False
+t_ghegipd,Ob-Gyn,,routine,False
+t_dpqkrr9,Dermatology,,routine,False
+t_eaeeyfu,Start with a GP,ENT,routine,False
+t_dq4uzzq,ENT,,soon,False
+t_drnv2ds,Emergency,Mental health,emergency,False
+t_cvtpjb2,Eye care,Start with a GP,routine,False
+t_drmuyyq,ENT,Start with a GP,routine,False
+t_ecevv9a,Urology,Start with a GP,soon,False
+t_cxhfa61,Start with a GP,Urology,routine,False
+t_e9zmd5b,Neurology,Start with a GP,routine,False
+t_ebrrvci,Ob-Gyn,Start with a GP,soon,False
+t_clmmc2b,Gastroenterology,Start with a GP,routine,False
+t_j1mb3mh,Start with a GP,Urology,soon,False
+t_ec3lwlc,Ob-Gyn,,soon,False
+t_dak8azx,ENT,,soon,False
+t_dna6trg,Start with a GP,Cardiology,routine,True
+t_cvv41zr,Emergency,Start with a GP,emergency,True
+t_d9y0q9v,Start with a GP,Dermatology,soon,False
+t_cgskr2u,Start with a GP,Mental health,routine,True
+t_cwofkx8,Ob-Gyn,,routine,False
+t_cw001xw,Mental health,,soon,False
+t_da3iup6,Dermatology,,routine,False
+t_fbsy8ga,Gastroenterology,Start with a GP,routine,False
+t_cmdjygx,Urology,Start with a GP,routine,False
+t_j22np8o,Skip,,,False
+t_dnxe08d,Start with a GP,,soon,False
+t_ecbxpw2,Dentistry,Start with a GP,routine,False
+t_ctmqegq,Dentistry,ENT,routine,False
+t_j0v038r,Skip,,,False
+t_dbt7rya,Skip,,,False
+t_fbm3sps,Dermatology,,routine,False
+t_ctppls0,Skip,,,False
+t_j28cot7,Dermatology,,routine,False
+t_chlh4k2,Mental health,Dentistry,routine,False
+t_e9nco5b,ENT,Start with a GP,soon,False
+t_ci8e330,Urology,,routine,False
+t_cjuuqy6,Start with a GP,,soon,False
+t_dba1k64,Start with a GP,ENT,routine,True
+t_cmgoqha,Orthopedics,,soon,False
+t_cjf0bhq,Urology,,routine,False
+t_cwcs4wr,Start with a GP,Dermatology,routine,True
+t_dprqct3,Orthopedics,Mental health,routine,False
+t_eadkd8p,Skip,,,False
+t_dalat30,Skip,,,False
+t_fbaxls0,Skip,,,False
+t_ec57cb2,Emergency,Orthopedics,emergency,True
+t_ckhzblu,Skip,,,False
+t_dqdyedv,Neurology,Start with a GP,soon,False
+t_ck9p18i,Emergency,Neurology,emergency,True
+t_dq8xwlq,Skip,,,False
+t_fchoy7h,Ob-Gyn,,routine,False
+t_d9ztsgt,Skip,,,False
+t_eb5yeiz,Skip,,,False
+t_da7hgxw,Start with a GP,Dermatology,routine,False
+t_ckoplq5,Start with a GP,ENT,routine,False
+t_dbj05fs,Eye care,,routine,False
+t_fb19ani,Skip,,,False
+t_cwjf3ad,Eye care,,soon,False
+t_ch8xd72,Neurology,Start with a GP,routine,False
+t_dpkkido,Emergency,Start with a GP,emergency,True
+t_eb9fkii,Dentistry,,routine,False
+t_izhnxlm,Dermatology,,routine,False
+t_f9c3nfd,Mental health,Cardiology,routine,False
+t_cw8mk5u,Urology,,routine,False
+t_j1cc0tt,Skip,,,False
+t_iz4r6de,Skip,,,False
+t_j0o761g,Skip,,,False
+t_fc9jrhw,Neurology,Start with a GP,soon,False
+t_cic1013,Start with a GP,Orthopedics,routine,False
+t_ecf5r6c,Cardiology,Start with a GP,routine,False
+t_ckogswa,Eye care,,routine,False
+t_cfgddj1,Emergency,Start with a GP,emergency,True
+t_dov8gyp,Start with a GP,Gastroenterology,routine,True
+t_dmqo48p,Start with a GP,ENT,routine,True
+t_clv2sl2,Dentistry,,routine,False
+t_cgk7qgg,ENT,,routine,False
+t_gh3ck00,Mental health,Neurology,soon,False
+t_dpyqg67,ENT,,routine,False
+t_fbido8i,Gastroenterology,Start with a GP,routine,False
+t_drnrjsr,ENT,Start with a GP,soon,False
+t_dp23efg,Start with a GP,Gastroenterology,soon,True
+t_clywtvd,Urology,Start with a GP,soon,False
+t_ctyeglc,Dermatology,,routine,False
+t_ciku20p,Eye care,Neurology,routine,True
+t_dnturjd,Neurology,Start with a GP,soon,False
+t_f9iuubf,Emergency,Start with a GP,emergency,True
+t_e9sm2v0,Cardiology,Start with a GP,soon,False
+t_f9hs7i9,Ob-Gyn,,routine,False
+t_cvs3vkg,Orthopedics,,soon,False
+t_ch8ycoj,Ob-Gyn,,routine,False
+t_ctyjxtm,Eye care,Neurology,routine,False
+t_cuqgaz2,Cardiology,,routine,False
+t_dp2owh6,Mental health,,soon,False
+t_cwzdrj0,Start with a GP,ENT,soon,False
+t_chw12aq,Mental health,Cardiology,routine,False
+t_dpunpus,ENT,Start with a GP,routine,False
+t_dovx60u,Dermatology,Start with a GP,routine,False
+t_cw0kqs0,Dermatology,,routine,False
+t_iz8rejr,Start with a GP,Neurology,soon,True
+t_darhd6a,Cardiology,,routine,False
+t_daeiq24,Gastroenterology,Start with a GP,routine,False
+t_cfwwha9,Emergency,Gastroenterology,emergency,True
+t_drxfblz,Gastroenterology,Dermatology,routine,False
+t_fa9hbez,Skip,,,False
+t_ebc7bci,ENT,Start with a GP,routine,False
+t_d9ui3g3,Ob-Gyn,,soon,False
+t_ecke78y,Mental health,Neurology,soon,False
+t_dnbyh2b,Skip,,,False
+t_dbn6sjg,Skip,,,False
+t_dbd6zac,Start with a GP,Cardiology,soon,False
+t_dr37eqr,Eye care,,routine,False
+t_dqhpf04,Neurology,Eye care,soon,True
+t_dr43pzx,Cardiology,Start with a GP,soon,False
+t_drdgqmx,Start with a GP,Cardiology,routine,True
+t_fcgdzix,Emergency,Cardiology,emergency,True
+t_dqc64zy,Eye care,,routine,False
+t_cff2mfa,Skip,,,False
+t_dbl3mtb,Gastroenterology,,soon,False
+t_do5k2ft,Dermatology,,routine,False
+t_fbsz7nw,Emergency,,emergency,False
+t_drp1egm,Urology,,routine,False
+t_fbabvqa,Emergency,,emergency,False
+t_dbopogi,Gastroenterology,Start with a GP,soon,False
+t_dn8fsul,Skip,,,False
+t_dom51jv,Emergency,Cardiology,emergency,True
+t_fbi5r98,Skip,,,False
+t_dbqtipf,Dermatology,,routine,False
+t_ec3tx3d,Mental health,,routine,False
+t_dr0l3sn,Skip,,,False
+t_hqcbpma,Start with a GP,,soon,False
+t_dpzbahf,Skip,,,False
+t_cu1uc68,ENT,Start with a GP,routine,False
+t_cko5x9g,Eye care,,routine,False
+t_j08e7hs,Emergency,,emergency,False
+t_cvnxrjo,Start with a GP,ENT,routine,True
+t_dnsa9ut,Start with a GP,,routine,False
+t_dqonl3e,Start with a GP,,routine,False
+t_dad7bj2,Urology,Mental health,routine,False
+t_cwlhlgu,Orthopedics,,soon,False
+t_cnabgup,Start with a GP,Neurology,soon,True
+t_dp95bg5,Start with a GP,Orthopedics,soon,True
+t_dqc75nr,Start with a GP,Cardiology,soon,False
+t_ci0tm4x,Dermatology,,routine,False
+t_e9eulyf,ENT,,routine,False
+t_cmjmj1o,Orthopedics,,routine,False
+t_cw75au5,Ob-Gyn,Start with a GP,routine,False
+t_cjkwef4,ENT,Start with a GP,routine,False
+t_ctlrt5s,Neurology,Start with a GP,soon,True
+t_cv2ndbz,Dermatology,,routine,False
+t_cxazlbq,Emergency,Start with a GP,emergency,True
+t_dayf6py,Neurology,Start with a GP,routine,False
+t_izdfjvv,Start with a GP,,soon,False
+t_cwcjt66,Start with a GP,Urology,routine,False
+t_hp8zxe2,Emergency,Start with a GP,emergency,True
+t_dn3q849,Emergency,Start with a GP,emergency,True
+t_eapbscq,Neurology,Mental health,soon,False
+t_f9ezuj7,Gastroenterology,Start with a GP,soon,False
+t_dpdyvoo,ENT,,soon,False
+t_ckd4j8m,Start with a GP,Dermatology,routine,False
+t_dqh5q7g,Ob-Gyn,,soon,False
+t_chctfrx,ENT,,routine,False
+t_cu3pd4q,Orthopedics,Start with a GP,routine,False
+t_d9vjacf,Skip,,,False
+t_j20r1b2,Skip,,,False
+t_cmxhubc,Eye care,,routine,False
+t_cw0isbc,Cardiology,Start with a GP,soon,False
+t_dpzmscv,Start with a GP,,soon,False
+t_d9lbfcv,ENT,Start with a GP,routine,False
+t_fbewrh2,Eye care,Neurology,soon,False
+t_ec31oro,Skip,,,False
+t_ck4qisu,Start with a GP,Dermatology,soon,True
+t_cix5xfh,Eye care,,soon,False
+t_cuutr9w,Urology,Mental health,routine,False
+t_dan1w4r,Start with a GP,Cardiology,routine,False
+t_dnr5ozz,Emergency,Neurology,emergency,True
+t_cwqydze,Skip,,,False
+t_cu4vf3i,Ob-Gyn,,routine,False
+t_drtluz3,Gastroenterology,Start with a GP,routine,False
+t_ch22hhm,Orthopedics,,soon,False
+t_ckxqewf,Start with a GP,Gastroenterology,routine,False
+t_cllceq1,Skip,,,False
+t_e9jgf8q,Mental health,,routine,False
+t_cu382rb,Start with a GP,Dermatology,routine,False
+t_cmj04pc,Start with a GP,,routine,False
+t_dr365fo,Eye care,Neurology,routine,False
+t_fauq1p9,Gastroenterology,Start with a GP,soon,False
+t_cn28c7p,Neurology,Start with a GP,routine,False
+t_cuacgpy,Orthopedics,,routine,False
+t_cmcdrww,Skip,,,False
+t_cmit34w,Ob-Gyn,,soon,False
+t_cidgayt,Mental health,,routine,False
+t_j22nfdx,Start with a GP,Cardiology,routine,False
+t_cv37wnv,Eye care,,routine,False
+t_dr0geux,Start with a GP,,routine,False
+t_eaign08,Neurology,Mental health,soon,False
+t_cutdv5l,Start with a GP,Orthopedics,routine,False
+t_fbxrs3c,Start with a GP,,soon,False
+t_cmpucx8,Dermatology,,routine,False
+t_dq3sfe5,Start with a GP,Gastroenterology,soon,False
+t_eb9jgbt,Gastroenterology,Start with a GP,soon,False
+t_cuu0tcn,Start with a GP,Neurology,routine,False
+t_cmjmrsz,Ob-Gyn,,routine,False
+t_d9g157t,Start with a GP,,routine,False
+t_cks34x3,ENT,,routine,False
+t_cvfr1ty,Dermatology,Start with a GP,routine,False
+t_ggw03fc,ENT,,soon,False
+t_doratfl,Start with a GP,,routine,False
+t_chjz4qo,ENT,Start with a GP,routine,False
+t_ecwdr32,Skip,,,False
+t_ctpb2mo,Orthopedics,,routine,False
+t_dbpv43b,Start with a GP,,soon,False
+t_cmmy0b3,Dermatology,,routine,False
+t_fatz4st,Start with a GP,Dentistry,soon,True
+t_dqch28f,ENT,,routine,False
+t_dongsb3,Orthopedics,,soon,False
+t_dnjdevz,Start with a GP,Gastroenterology,routine,False
+t_cfmd943,Skip,,,False
+t_cybbjzl,Neurology,Start with a GP,routine,False
+t_datfm18,Start with a GP,Eye care,soon,False
+t_ghjn24h,Start with a GP,Mental health,soon,False
+t_drg6n2w,Skip,,,False
+t_db2fzwt,Emergency,Eye care,emergency,True
+t_cgo9cpu,Dermatology,Start with a GP,routine,False
+t_e9ya7v2,Start with a GP,ENT,soon,False
+t_dqcs5yu,Eye care,,soon,False
+t_e9grscj,Skip,,,False
+t_cgccfzw,Dentistry,Start with a GP,routine,False
+t_dr2sfoo,Gastroenterology,Start with a GP,soon,False
+t_do61r53,Emergency,Cardiology,emergency,True
+t_ci7771k,ENT,Start with a GP,routine,False
+t_dp5rek8,ENT,,routine,False
+t_eaziswp,Orthopedics,,routine,False
+t_chys5jc,Start with a GP,,routine,False
+t_ecm8eh7,Ob-Gyn,Start with a GP,soon,False
+t_cxy9y12,Orthopedics,,routine,False
+t_cumpffq,Emergency,Start with a GP,emergency,True
+t_ggvoonw,ENT,Cardiology,routine,False
+t_dblh36n,Start with a GP,Gastroenterology,soon,False
+t_ci563p9,Start with a GP,ENT,routine,False
+t_eamlac4,Skip,,,False
+t_dbgfs9e,Skip,,,False
+t_ebhb7we,Skip,,,False
+t_cwxjatg,Neurology,Start with a GP,routine,False
+t_ec8ckas,Start with a GP,Gastroenterology,routine,False
+t_ck5flqq,Start with a GP,Orthopedics,routine,False
+t_dq03plv,Start with a GP,Dermatology,soon,False
+t_eawolhv,Skip,,,False
+t_cgrbmey,Eye care,Start with a GP,routine,False
+t_cuc112e,Eye care,,routine,False
+t_cmdgr09,Neurology,Mental health,soon,False
+t_dn87us7,Gastroenterology,Start with a GP,routine,False
+t_dq3udb3,Skip,,,False
+t_cwrxu2n,Eye care,Neurology,routine,False
+t_ea6it35,Gastroenterology,Start with a GP,soon,False
+t_j10n1wy,Ob-Gyn,Start with a GP,soon,False
+t_ckf44s5,Skip,,,False
+t_cu3gozj,ENT,Start with a GP,soon,False
+t_cmasfxf,Orthopedics,,soon,False
+t_cw9lop5,Start with a GP,Urology,routine,True
+t_dmvs8ub,Urology,,routine,False
+t_dpcdkqf,Start with a GP,Ob-Gyn,soon,False
+t_cv0jtlq,Urology,Start with a GP,routine,False
+t_dqnlj7f,Skip,,,False
+t_dbhrhvc,Skip,,,False
+t_dabnsdt,Ob-Gyn,Start with a GP,soon,False
+t_cwd803t,Skip,,,False
+t_donh9jk,Skip,,,False
+t_eajfp0f,Gastroenterology,,routine,False
+t_dpslurm,Dentistry,,soon,False
+t_dr2hbi1,Start with a GP,Orthopedics,routine,True
+t_dppwwg7,ENT,,soon,False
+t_db3ogu9,Dermatology,Urology,routine,False
+t_hpxqcb5,Start with a GP,,routine,False
+t_db63ddm,Dermatology,Start with a GP,routine,False
+t_ebuha52,Start with a GP,Dermatology,soon,True
+t_cttl1to,Ob-Gyn,Start with a GP,soon,False
+t_cv4pl85,Ob-Gyn,,routine,False
+t_chr4k1r,Neurology,Start with a GP,routine,False
+t_cmbq3qe,Start with a GP,,soon,False
+t_ea4z4pq,Urology,Start with a GP,soon,False
+t_cwumkve,Urology,,routine,False
+t_chewbh2,Orthopedics,,soon,False
+t_eacdvih,Start with a GP,Orthopedics,routine,False
+t_cmmdus0,Gastroenterology,Start with a GP,routine,False
+t_dq511va,Emergency,Cardiology,emergency,False
+t_drmsl5a,Skip,,,False
+t_dotdjcu,Urology,Start with a GP,routine,False
+t_da2qqn9,Neurology,Start with a GP,soon,False
+t_ci8d6wa,Gastroenterology,Start with a GP,routine,False
+t_fb0jfb4,Start with a GP,Cardiology,routine,False
+t_drnl7gk,Start with a GP,,routine,False
+t_cn50r6y,Eye care,,routine,False
+t_dq786yq,Emergency,Cardiology,emergency,True
+t_cwdcvc9,Start with a GP,,soon,False
+t_cvcqqt0,Orthopedics,,routine,False
+t_cx1roe2,Ob-Gyn,Dermatology,routine,False
+t_fcjsd4l,Start with a GP,,routine,False
+t_chjhibc,Eye care,,soon,False
+t_ctzanj2,Start with a GP,Dentistry,routine,False
+t_chcjie4,Skip,,,False
+t_ciru7lw,Cardiology,Start with a GP,routine,False
+t_fcma6po,Skip,,,False
+t_ecyg76l,Start with a GP,Dermatology,routine,False
+t_chm9xa3,Mental health,Start with a GP,soon,False
+t_cx9za6q,Skip,,,False
+t_dauigwr,Neurology,ENT,routine,False
+t_cuusqie,Skip,,,False
+t_ctoihyf,Skip,,,False
+t_eax4yi6,ENT,,routine,False
+t_j1q55bb,Skip,,,False
+t_fcjcpkf,Orthopedics,,routine,False
+t_d9vhn2s,Emergency,Neurology,emergency,True
+t_drpv07o,Skip,,,False
+t_cfmey42,ENT,Start with a GP,routine,False
+t_ctt4r7n,Dermatology,,routine,False
+t_fc2inor,Skip,,,False
+t_cm1c9lh,Neurology,,routine,False
+t_eanr9m8,Neurology,Start with a GP,routine,False
+t_ea0suha,Dentistry,Start with a GP,routine,False
+t_dbaw93c,Skip,,,False
+t_eahcn7k,Emergency,Start with a GP,emergency,True
+t_f93cexy,ENT,Start with a GP,soon,False
+t_cm3iol3,Skip,,,False
+t_dpyaovl,Start with a GP,,routine,False
+t_cuvipjp,Emergency,Start with a GP,emergency,True
+t_cwjo5o9,Eye care,,routine,False
+t_daq7792,Skip,,,False
+t_cxbqyej,Start with a GP,ENT,routine,False
+t_dr2n8uc,Dermatology,,routine,False
+t_dragd8n,Start with a GP,Mental health,routine,False
+t_cwy8z9u,Start with a GP,Neurology,routine,False
+t_ecbolsd,Start with a GP,Orthopedics,soon,True
+t_j0at2di,Start with a GP,ENT,soon,False
+t_fa128zs,Ob-Gyn,Start with a GP,soon,False
+t_ec4px5n,Skip,,,False
+t_cwlvz1n,Dermatology,Urology,routine,False

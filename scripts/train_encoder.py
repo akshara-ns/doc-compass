@@ -2,9 +2,13 @@
 
 Stage 1 trains on the public Patient Comments set. The best epoch is chosen on a
 validation share of that set, and the held-out share is scored once at the end.
+Stage 2 continues from the stage-1 checkpoint on our own gold training posts and keeps the
+epoch with the best macro-F1 on our dev posts. With --from-base it starts from the original
+weights instead (gold only), for comparison. Our test posts are never used here.
 
 Run:  python scripts/train_encoder.py --model distilroberta
-      python scripts/train_encoder.py --model biomedbert
+      python scripts/train_encoder.py --model distilroberta --stage 2
+      python scripts/train_encoder.py --model distilroberta --stage 2 --from-base
 """
 
 import argparse
@@ -26,7 +30,7 @@ from doccompass import paths
 from doccompass.labels import LABEL2ID, LABELS
 from doccompass.metrics import describe, score
 from doccompass.router import EncoderRouter
-from doccompass.splits import SEED, public_split
+from doccompass.splits import SEED, gold_split, public_split
 
 ENCODERS = {  # revisions pinned so a rerun starts from the same weights
     "distilroberta": {"repo": "distilbert/distilroberta-base", "revision": "fb53ab8802853c8e4fbdbcd0529f21fc6f459b2b"},
@@ -76,26 +80,38 @@ def validation_scores(prediction) -> dict:
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--model", choices=ENCODERS, required=True)
-    parser.add_argument("--epochs", type=int, default=4)
-    parser.add_argument("--lr", type=float, default=3e-5)
+    parser.add_argument("--stage", type=int, choices=(1, 2), default=1)
+    parser.add_argument("--from-base", action="store_true", help="stage 2 only: start from the original weights (gold only)")
+    parser.add_argument("--epochs", type=int, help="default 4 for stage 1, 8 for stage 2")
+    parser.add_argument("--lr", type=float, help="default 3e-5 for stage 1, 2e-5 for stage 2")
     args = parser.parse_args()
-    stage = 1
+    stage = args.stage
+    epochs = args.epochs or (4 if stage == 1 else 8)
+    lr = args.lr or (3e-5 if stage == 1 else 2e-5)
     encoder = ENCODERS[args.model]
-    train, val, held_out = public_split()
+    if stage == 1:
+        train, val, held_out = public_split()
+        name, start = f"{args.model}_stage1", {"pretrained_model_name_or_path": encoder["repo"], "revision": encoder["revision"]}
+    else:
+        gold = gold_split()
+        train, val, held_out = gold["train"], gold["dev"], None
+        if args.from_base:
+            name, start = f"{args.model}_gold", {"pretrained_model_name_or_path": encoder["repo"], "revision": encoder["revision"]}
+        else:
+            name, start = f"{args.model}_stage2", {"pretrained_model_name_or_path": str(paths.MODELS / f"{args.model}_stage1")}
 
-    tokenizer = AutoTokenizer.from_pretrained(encoder["repo"], revision=encoder["revision"])
+    tokenizer = AutoTokenizer.from_pretrained(**start)
     model = AutoModelForSequenceClassification.from_pretrained(
-        encoder["repo"], revision=encoder["revision"], num_labels=len(LABELS),
-        id2label=dict(enumerate(LABELS)), label2id=LABEL2ID)
+        **start, num_labels=len(LABELS), id2label=dict(enumerate(LABELS)), label2id=LABEL2ID)
 
-    batch_size = 32
-    steps = (len(train) // batch_size + 1) * args.epochs
-    run_dir = paths.MODELS / f"{args.model}_stage{stage}_run"
+    batch_size = 32 if stage == 1 else 16
+    steps = (len(train) // batch_size + 1) * epochs
+    run_dir = paths.MODELS / f"{name}_run"
     trainer = WeightedTrainer(
         model=model,
         args=TrainingArguments(
-            output_dir=str(run_dir), num_train_epochs=args.epochs, learning_rate=args.lr, weight_decay=0.01,
-            warmup_steps=int(0.1 * steps), per_device_train_batch_size=batch_size, per_device_eval_batch_size=64,
+            output_dir=str(run_dir), num_train_epochs=epochs, learning_rate=lr, weight_decay=0.01,
+            warmup_steps=int(0.1 * steps), per_device_train_batch_size=batch_size, per_device_eval_batch_size=32,
             eval_strategy="epoch", save_strategy="epoch", save_total_limit=1, load_best_model_at_end=True,
             metric_for_best_model="macro_f1", greater_is_better=True, logging_strategy="epoch",
             report_to="none", seed=SEED, dataloader_pin_memory=False),
@@ -110,20 +126,22 @@ def main() -> None:
     seconds = time.time() - started
     val_scores = trainer.evaluate()
 
-    out_dir = paths.MODELS / f"{args.model}_stage{stage}"
+    out_dir = paths.MODELS / name
     trainer.save_model(str(out_dir))
     tokenizer.save_pretrained(str(out_dir))
     shutil.rmtree(run_dir, ignore_errors=True)
 
-    # Score the saved model the same way the app will use it.
+    # Score the saved model the same way the app will use it: public held-out in stage 1, our dev posts in stage 2.
     router = EncoderRouter(out_dir, max_length=MAX_LENGTH[stage])
-    result = score(router.predict_proba(held_out["text"]), held_out["label"].map(LABEL2ID).to_numpy())
-    print(describe(f"{args.model} stage {stage}, public held-out", result))
+    scored, where = (held_out, "public held-out") if stage == 1 else (val, "our dev posts")
+    result = score(router.predict_proba(scored["text"]), scored["label"].map(LABEL2ID).to_numpy())
+    print(describe(f"{name}, {where}", result))
     (out_dir / "metrics.json").write_text(json.dumps({
-        "model": encoder, "stage": stage, "epochs": args.epochs, "learning_rate": args.lr, "seed": SEED,
+        "model": encoder, "stage": stage, "from": "base" if stage == 1 or args.from_base else "stage1",
+        "epochs": epochs, "learning_rate": lr, "seed": SEED,
         "train_rows": len(train), "val_rows": len(val), "fit_seconds": round(seconds),
         "val": {key: round(float(value), 4) for key, value in val_scores.items() if key in ("eval_accuracy", "eval_macro_f1")},
-        "held_out": result, "device": router.device,
+        "held_out" if stage == 1 else "dev": result, "device": router.device,
     }, indent=2))
     print(f"Saved {out_dir.relative_to(paths.ROOT)} ({seconds:.0f} s of training)")
 

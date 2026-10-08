@@ -11,7 +11,7 @@ from sklearn.metrics import cohen_kappa_score
 
 from .labels import EMERGENCY, SKIP, URGENCY
 
-DEV_DRAW = 60  # random train posts set aside as dev candidates; about 50 survive the skips
+DEV_DRAW = 75  # random train posts set aside as dev candidates; about 50 survive the skips and emergencies
 
 
 def annotators(pool: pd.DataFrame) -> list[str]:
@@ -91,7 +91,7 @@ def merge(pool: pd.DataFrame, labels: dict[str, pd.DataFrame], adjudicated: pd.D
         else:
             split = "dev" if post.id in dev else "train"
         changed = [r.get("changed_from_draft", "") for r in rows if r.get("draft_primary", "")]
-        gold.append({"id": post.id, "split": split, **final, "source": source,
+        gold.append({"id": post.id, "part": post.part, "split": split, **final, "source": source,
                      "changed_from_draft": str(any(c == "True" for c in changed)) if changed else ""})
-    columns = ["id", "split", "primary", "alternate", "urgency", "ambiguous", "source", "changed_from_draft"]
+    columns = ["id", "part", "split", "primary", "alternate", "urgency", "ambiguous", "source", "changed_from_draft"]
     return pd.DataFrame(gold, columns=columns), pd.DataFrame(unresolved)

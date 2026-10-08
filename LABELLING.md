@@ -12,7 +12,7 @@ The pool already assigns every post. The tool shows you only your own posts, tes
 | Test posts, labelled by one of us | 65 | 65 |
 | Train and dev posts | 272 | 272 |
 
-Test posts are labelled from scratch, with nothing pre-filled. They are the answer key, so they must be our own judgement. Don't compare notes on the 60 shared posts until both of us have finished them.
+Every post opens with a first-pass label drafted by an AI assistant (`data/manual/draft.labels.csv`), which you confirm or change. Test posts are the answer key, so check each draft properly against the guideline rather than accepting it: the tool records whether you changed it, and the report states how often we did. Don't compare notes on the 60 shared posts until both of us have finished them.
 
 ## Targets
 
@@ -117,4 +117,4 @@ The 50 or so dev posts are fixed in advance from the randomly drawn train posts,
 
 ## Time
 
-About a minute per test post and less for train posts, so roughly 3–4 hours each. The 60 shared posts come first. Once we've both finished them, compare a few disagreements to make sure we're reading the guideline the same way, before going on.
+About 20–40 seconds per post to check a draft, so roughly 2–3 hours each. The 60 shared posts come first. Once we've both finished them, compare a few disagreements to make sure we're reading the guideline the same way, before going on.
