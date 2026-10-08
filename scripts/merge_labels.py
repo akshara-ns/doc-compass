@@ -5,8 +5,12 @@ Reads data/manual/<name>.labels.csv for each of us and writes data/manual/gold.l
 Shared test posts where we disagree are added to data/manual/adjudicated.labels.csv: fill in
 the primary (and optionally alternate, urgency, ambiguous) we agree on, then run this again.
 All three files hold ids and labels only, so they are safe to commit.
+
+With --from-drafts, the first-pass labels in data/manual/draft.labels.csv are used as the gold
+labels for every post, unreviewed. There is then no agreement to report.
 """
 
+import argparse
 import sys
 from pathlib import Path
 
@@ -26,9 +30,17 @@ def read_labels(path: Path) -> pd.DataFrame:
 
 
 def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    parser.add_argument("--from-drafts", action="store_true", help="use the unreviewed first-pass labels as the gold labels")
     pool = pd.read_csv(paths.POOL_IDS, dtype=str)
-    names = annotators(pool)
-    labels = {name: read_labels(paths.MANUAL / f"{name}.labels.csv") for name in names}
+    from_drafts = parser.parse_args().from_drafts
+    if from_drafts:
+        pool["annotators"] = "draft"
+        labels = {"draft": read_labels(paths.DRAFT_LABELS)}
+        names = ["draft"]
+    else:
+        names = annotators(pool)
+        labels = {name: read_labels(paths.MANUAL / f"{name}.labels.csv") for name in names}
     labels = {name: frame for name, frame in labels.items() if len(frame)}
     if not labels:
         sys.exit("No label files yet. Label with: python tools/annotate.py --annotator NAME")
@@ -49,6 +61,8 @@ def main() -> None:
 
     adjudicated = read_labels(paths.ADJUDICATED)
     gold, unresolved = merge(pool, labels, adjudicated)
+    if from_drafts:
+        gold["source"] = "draft"
 
     if len(unresolved):  # add new disagreements to the file we fill in, keeping what's there
         template = unresolved.set_index("id")

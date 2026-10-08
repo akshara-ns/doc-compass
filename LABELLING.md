@@ -2,6 +2,8 @@
 
 How we split and label the 734 posts in `data/manual/pool.ids.csv`. The label set and what each label covers are in `docs/label-set.md`.
 
+> **Decision, 8 Oct:** for the 8 Oct submission we use the AI-drafted first-pass labels in `data/manual/draft.labels.csv` as the gold labels, unreviewed (`python scripts/merge_labels.py --from-drafts`). The review process below is how the labels would be checked by us; it was not carried out for this submission.
+
 ## Who labels what
 
 The pool already assigns every post. The tool shows you only your own posts, test posts first.

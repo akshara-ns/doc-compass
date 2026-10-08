@@ -11,10 +11,10 @@ A specialist router. Describe a health concern in plain language and get told wh
 | GUI | Gradio app, run from a Colab notebook that prints a public link and QR code (Gradio Spaces on Hugging Face now need a paid plan). Code and models: `ssg1/doc-compass` on Hugging Face |
 | Model types | All three: from scratch, fine-tuned, off-the-shelf (the brief asks for at least two) |
 | Focus | Routing. Redaction is out of scope for now: we assume users type relevant, non-identifying text. A simple rule-based scrub may be added for completeness, and full redaction later if time allows |
-| Manual data | 600 labelled posts (400 train / 50 dev / 150 test) |
+| Labelled data | 734 posts labelled; 527 usable for routing (362 train / 50 dev / 115 test), 54 Emergency, 153 Skip. Labels drafted by an AI assistant from the guideline and used unreviewed (decided 8 Oct) |
 | Headline result | The routers against "always GP" and against each other on our own 150 test posts |
 | Stage-1 data | Patient Comments and Specialist Types, a public set remapped to our labels. Used for stage-1 training only, never as the test set |
-| Annotation effort | ≈ 7 person-hours across both of us; 60 of the 150 test posts are labelled by both of us for Cohen's κ |
+| Annotation | AI-drafted, unreviewed, so there is no Cohen's κ. The review tool and merge script are ready if the labels are checked later (`LABELLING.md`) |
 | Completion estimate | ≈ 65% with this scope (the v1 scope was ≈ 25% in one week) |
 
 Current figure: `docs/checkin/checkin_figure_v3.png` (4 Oct). The 27 Sep check-in figure, `docs/checkin/checkin_figure.png`, is kept as it was. Label set and public-data mapping: `docs/label-set.md`.
@@ -48,7 +48,7 @@ Current figure: `docs/checkin/checkin_figure_v3.png` (4 Oct). The 27 Sep check-i
 
 **Not done yet**
 
-- Labelling the posts; stage 2 (training on our own posts); tuning the cutoffs; evaluation on our test posts; the data card and the report.
+- The data card and the report. (Labelling, stage 2, the cutoffs and the test evaluation were done on 8 Oct: `docs/routing-results.md`.)
 
 **Decisions made on 4 Oct**
 
@@ -215,18 +215,18 @@ Checked on 27 Sep 2026 against the Hugging Face API, dataset files, papers and l
 - [ ] Slides say plainly that the router shown has only seen public data
 
 ### 5–6 Oct · Label and fine-tune
-- [ ] First-pass labels for the train and dev posts
-- [ ] Both of us: label the train and dev posts and the 150 test posts; double-label 60
-- [ ] Script that computes Cohen's κ on the 60 shared posts, merges them into one label each, and writes the train / dev / test splits
-- [ ] Stage 2: DistilRoBERTa and BiomedBERT on our 400 training posts; tune the cutoffs on dev
+- [x] First-pass labels for all 734 posts (AI-drafted; used unreviewed, decided 8 Oct)
+- [ ] ~~Both of us: review the labels; double-label 60~~ not done: drafts used unreviewed
+- [x] Merge script with Cohen's κ, agreed labels and the train / dev / test splits (`scripts/merge_labels.py`)
+- [x] Stage 2: all three routers on our 362 training posts; cutoffs tuned on dev (TAU 0.25, MARGIN 0.05)
 - [ ] Republish the bundle with the stage-2 routers
 
 ### 7 Oct · Evaluate
-- [ ] Routing on the 150-post test split: top-1, top-3, macro-F1, exact intervals, clear vs ambiguous, vs "always GP"
-- [ ] Ablation: TF-IDF vs the two encoders; gold only vs public only vs public then gold; latency
+- [x] Routing on the 115-post test split: top-1, top-3, macro-F1, exact intervals, clear vs ambiguous, vs "always GP"
+- [x] Ablation: TF-IDF vs the two encoders; ours only vs public only vs public then ours (on dev); latency
 - [x] Missed emergencies and false alarms on 80 cases we wrote (`data/synthetic/emergency_cases.csv`)
-- [ ] False-alarm rate of the emergency check on the labelled posts
-- [ ] Cohen's κ on the 60 double-labelled posts; error analysis
+- [x] Emergency rules on the labelled posts: fire on 8.5% of routable posts
+- [ ] ~~Cohen's κ~~ not possible with unreviewed drafts; error analysis
 
 ### 8 Oct · Ship and write
 - [ ] Final app: disclaimer, "Start with a GP" always visible, made-up examples only, no input retained

@@ -36,7 +36,7 @@ ENCODERS = {  # revisions pinned so a rerun starts from the same weights
     "distilroberta": {"repo": "distilbert/distilroberta-base", "revision": "fb53ab8802853c8e4fbdbcd0529f21fc6f459b2b"},
     "biomedbert": {"repo": "microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract-fulltext", "revision": "e1354b7a3a09615f6aba48dfad4b7a613eef7062"},
 }
-MAX_LENGTH = {1: 64, 2: 512}  # stage 1 comments are one sentence; stage 2 posts are long
+MAX_LENGTH = {1: 64, 2: 384}  # stage 1 comments are one sentence; 384 covers most posts and fits in a laptop's memory
 
 
 class TextDataset(torch.utils.data.Dataset):
@@ -82,11 +82,11 @@ def main() -> None:
     parser.add_argument("--model", choices=ENCODERS, required=True)
     parser.add_argument("--stage", type=int, choices=(1, 2), default=1)
     parser.add_argument("--from-base", action="store_true", help="stage 2 only: start from the original weights (gold only)")
-    parser.add_argument("--epochs", type=int, help="default 4 for stage 1, 8 for stage 2")
+    parser.add_argument("--epochs", type=int, help="default 4 for stage 1, 6 for stage 2")
     parser.add_argument("--lr", type=float, help="default 3e-5 for stage 1, 2e-5 for stage 2")
     args = parser.parse_args()
     stage = args.stage
-    epochs = args.epochs or (4 if stage == 1 else 8)
+    epochs = args.epochs or (4 if stage == 1 else 6)
     lr = args.lr or (3e-5 if stage == 1 else 2e-5)
     encoder = ENCODERS[args.model]
     if stage == 1:
@@ -104,14 +104,15 @@ def main() -> None:
     model = AutoModelForSequenceClassification.from_pretrained(
         **start, num_labels=len(LABELS), id2label=dict(enumerate(LABELS)), label2id=LABEL2ID)
 
-    batch_size = 32 if stage == 1 else 16
-    steps = (len(train) // batch_size + 1) * epochs
+    # Stage 2 posts are long: small batches, with gradients added up over 2 steps, keep memory low.
+    batch_size, accumulate = (32, 1) if stage == 1 else (4, 2)
+    steps = (len(train) // (batch_size * accumulate) + 1) * epochs
     run_dir = paths.MODELS / f"{name}_run"
     trainer = WeightedTrainer(
         model=model,
         args=TrainingArguments(
             output_dir=str(run_dir), num_train_epochs=epochs, learning_rate=lr, weight_decay=0.01,
-            warmup_steps=int(0.1 * steps), per_device_train_batch_size=batch_size, per_device_eval_batch_size=32,
+            warmup_steps=int(0.1 * steps), per_device_train_batch_size=batch_size, gradient_accumulation_steps=accumulate, per_device_eval_batch_size=8,
             eval_strategy="epoch", save_strategy="epoch", save_total_limit=1, load_best_model_at_end=True,
             metric_for_best_model="macro_f1", greater_is_better=True, logging_strategy="epoch",
             report_to="none", seed=SEED, dataloader_pin_memory=False),

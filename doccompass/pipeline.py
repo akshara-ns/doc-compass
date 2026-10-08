@@ -13,15 +13,16 @@ from .redflags import emergency_message, find_flags
 from .router import EncoderRouter, TfidfRouter
 from .scrub import scrub
 
-# Provisional cutoffs for the "unsure" state; tuned on the dev split once our labels exist.
-TAU = 0.50  # top confidence below this is unsure
-MARGIN = 0.15  # top two closer than this is unsure
+# Cutoffs for the "unsure" state, tuned on our dev posts for biomedbert_gold (8 Oct;
+# scripts/evaluate_routing.py tune). Other routers use the same values untuned.
+TAU = 0.25  # top confidence below this is unsure
+MARGIN = 0.05  # top two closer than this is unsure
 MIN_WORDS, MAX_CHARS = 3, 6000
 
 
-# Tried in order; stage 2 (trained on our posts) beats stage 1 (public data only).
-ROUTER_ORDER = ["distilroberta_stage2", "biomedbert_stage2", "tfidf_stage2",
-                "distilroberta_stage1", "biomedbert_stage1", "tfidf_stage1"]
+# Tried in order: routers trained on our posts by dev macro-F1 (8 Oct), then stage 1 (public data only).
+ROUTER_ORDER = ["biomedbert_gold", "distilroberta_stage2", "biomedbert_stage2", "distilroberta_gold",
+                "tfidf_stage2", "tfidf_gold", "distilroberta_stage1", "biomedbert_stage1", "tfidf_stage1"]
 
 
 def load_router(name: str | None = None):
