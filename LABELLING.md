@@ -45,13 +45,52 @@ python tools/annotate.py --annotator sohum      # or akshara
 The tool opens in your browser and shows one post at a time. For each post:
 
 - **Which kind of doctor should this person book?** One of the 12 labels, or:
-  - **Emergency**: needs emergency care now
+  - **Emergency**: the post describes one of the warning signs below, happening now (see "When a post is an emergency")
   - **Skip**: not a "which doctor" question (a medication or lab-result question, general curiosity, already under a specialist for it)
 - **Also acceptable** (optional): a second label that would also be fine.
-- **Urgency**: routine, soon or emergency.
+- **Urgency**: routine or soon. Use "emergency" only together with the Emergency label.
 - **Ambiguous**: tick it if you couldn't really decide. When unsure, choose "Start with a GP" and tick ambiguous.
 
 You can close the tool at any time; it resumes at your next unlabelled post. **Back** revisits the previous post.
+
+### When a post is an emergency
+
+Label a post **Emergency** only if it describes one of these warning signs **happening now**. They are the same signs the app's emergency check uses (`WARNING_SIGNS` in `doccompass/redflags.py`), so our labels test the check against the definition it is built on.
+
+MedlinePlus, "Recognizing medical emergencies":
+
+1. Bleeding that will not stop
+2. Breathing problems (difficulty breathing, shortness of breath)
+3. Change in mental status (such as unusual behavior, confusion, difficulty arousing)
+4. Chest pain or discomfort lasting for two minutes or more
+5. Choking
+6. Coughing up or vomiting blood
+7. Fainting or loss of consciousness
+8. Feeling of committing suicide or murder
+9. Head or spine injury
+10. Inability to speak
+11. Severe abdominal pain or pressure
+12. Severe or persistent vomiting or diarrhea
+13. Sudden injury from a motor vehicle accident, burns, smoke inhalation, near drowning, or a deep or large wound
+14. Sudden, severe pain anywhere in the body
+15. Sudden dizziness, weakness, or change in vision
+16. Swallowing a poisonous substance
+17. Swelling of the face, eyes, or tongue
+
+CDC, "Signs and Symptoms of Stroke":
+
+18. Sudden numbness or weakness in the face, arm, or leg, especially on one side
+19. Sudden confusion, trouble speaking, or difficulty understanding speech
+20. Sudden trouble seeing
+21. Sudden trouble walking, dizziness, loss of balance, or lack of coordination
+22. Sudden severe headache with no known cause
+
+Rules of thumb:
+
+- **Happening now, or still going on.** "I had chest pain last year" is not an emergency; "my chest has been tight for the last hour" is.
+- **Judge the description, not the poster's worry.** A post that is frightened but describes none of these signs gets a specialty or "Start with a GP", with urgency "soon" if it shouldn't wait.
+- **An emergency is always the Emergency label,** never a specialty with urgency "emergency". Emergency posts are kept out of the router's training data and used to test the emergency check instead.
+- **Not sure whether it counts?** Choose Emergency and tick ambiguous. We go through those together.
 
 ## Save and share
 
