@@ -94,6 +94,7 @@ Use a T4 GPU runtime: without a GPU, Qwen isn't loaded, so only the written rule
 | `tools/annotate.py` | the labelling tool |
 | `tests/` | pytest checks |
 | `docs/label-set.md` | the label set and the public-data mapping |
+| `LABELLING.md` | who labels which posts, and how |
 | `docs/emergency-check-results.md` | missed emergencies and false alarms for the emergency check |
 | `doc-compass-plan.md` | the full plan |
 | `docs/checkin/` | system figures |
