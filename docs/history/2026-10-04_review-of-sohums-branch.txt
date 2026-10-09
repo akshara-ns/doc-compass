@@ -1,0 +1,215 @@
+DOC COMPASS - FIXES FROM THE REVIEW OF THE sg BRANCH
+Reviewed 4 Oct 2026, at commit 6503b72. All 30 tests pass on that commit.
+Ordered by deadline: presentation (5 Oct), before labelling starts, then the 8 Oct submission.
+
+
+==========================================================================================
+A. BEFORE THE PRESENTATION (5 OCT)
+==========================================================================================
+
+A1. Red-flag rules: four gaps and one negation bug                  doccompass/redflags.py
+------------------------------------------------------------------------------------------
+Problem
+  Missed:          "my chest hurts really badly"         (most common way to say it)
+                   "I can barely breathe"
+                   "thoughts of ending it all"
+                   "worst headache ever, came on suddenly"
+  Wrongly flagged: "I don't want to die from this, should I see a dermatologist"
+                   -> shows the emergency banner and the 988 crisis line.
+                   Cause: the negation list has "didn't" and "don't have" but not plain
+                   "don't" / "doesn't".
+
+Fix (tested: these 4 now flag, the false alarm is gone, all existing test phrases still
+behave the same)
+
+  1. chest pain rule, add to the end of the pattern:
+       |\bchest (?:hurts|is hurting|feels tight|feels heavy)\b
+
+  2. breathing rule, add "can barely" and "barely able to" to the opening group:
+       \b(?:{_CANT}|can barely|barely able to|struggling to|hard to|trouble|difficulty) breath(?:e|ing)\b
+
+  3. suicidal thoughts rule, add to the end of the pattern:
+       |\bend(?:ing)? it all\b|\btake my (?:own )?life\b
+
+  4. sudden severe pain rule, change the last alternative to:
+       |\bworst (?:headache|pain) (?:of my life|ever)\b
+
+  5. _NEGATION, replace the word list with:
+       (?:no|not|never|without|denies|deny|didn'?t|don'?t|doesn'?t|haven'?t|isn'?t|wasn'?t)
+     ("I don't want to live" is still flagged: that match starts at "don't", so the
+     negation check never sees it.)
+
+  Add the 5 phrases above to tests/test_pipeline.py: the first four to
+  test_emergencies_are_flagged, the "don't want to die from this" one to
+  test_ordinary_concerns_are_not_flagged.
+
+Known limit to say out loud, not fix now
+  Past events and other people still fire: "I had chest pain last year",
+  "I fainted once 3 years ago", "my mom passed out years ago". Report the false-alarm
+  rate on the labelled posts instead of chasing these with more regex.
+
+
+A2. Slide 5 contradicts the data                                       slides-draft.txt
+------------------------------------------------------------------------------------------
+Problem
+  The slide dismisses "synthetic triage sets -> machine-written textbook cases", then
+  presents Patient Comments as "close". Patient Comments looks generated too:
+  - emoji matched to the symptom (a leg emoji on knee pain, a flexed arm on a gym injury)
+  - typos that look inserted ("burnns", "leftt", "lookingg", "dragg", "worrid")
+  - "I have a ..." opens 391 comments; category sizes cluster at 25-41 and 250-330
+
+Fix
+  Replace the Patient Comments row with:
+    Patient Comments (Mendeley)  -> short, apparently generated comments;
+                                    we use it only for pre-training
+  Also store it under data/synthetic/ (not data/public/) and say the same in the data
+  card and the report.
+
+
+A3. Slide 6 title overstates                                           slides-draft.txt
+------------------------------------------------------------------------------------------
+Problem
+  "Three model types do the same routing job" - Qwen doesn't route, and the table has
+  two model types (from scratch, fine-tuned).
+
+Fix
+  Title:    Two kinds of router tie on public data; an off-the-shelf LLM explains
+  Footnote: add "The public test set is short and templated, so ~94% is an easy score.
+            Our own 150 posts are the real test."
+            (This also explains the 98-99% over-confidence on slide 9.)
+
+
+A4. Slide 7 "under a second"                                           slides-draft.txt
+------------------------------------------------------------------------------------------
+Problem
+  True for routing. Qwen's explanation on a Colab T4 is likely a few seconds (not timed).
+
+Fix
+  Time one full request in the demo video. If it's over a second, use
+  "From a sentence to a door in seconds", or say "routing takes under a second".
+
+
+A5. Model card on Hugging Face                                    scripts/publish_bundle.py
+------------------------------------------------------------------------------------------
+Problem
+  The card for ssg1/doc-compass describes the training data as "short, one-sentence
+  comments" with no mention that they appear generated.
+
+Fix
+  In model_card(), "Training data" section, add:
+    "The comments appear to be generated rather than written by real patients (emoji
+    matched to each symptom, inserted typos), so treat results on this set as a sanity
+    check only."
+  Then re-run publish_bundle.py and update the pinned revision in the notebook.
+
+
+A6. Notebook committed with outputs                       notebooks/doc_compass_app.ipynb
+------------------------------------------------------------------------------------------
+Problem
+  Saved outputs include a gradio.live link (temporary, will go stale) and Colab paths.
+  No tokens leaked.
+
+Fix
+  Clear all outputs before committing (Colab: Edit -> Clear all outputs, then save), or:
+    jupyter nbconvert --clear-output --inplace notebooks/doc_compass_app.ipynb
+
+
+==========================================================================================
+B. BEFORE LABELLING STARTS (CHEAP NOW, PAINFUL AFTER)
+==========================================================================================
+
+B1. Dev split has a different label mix from test                  scripts/select_pool.py
+------------------------------------------------------------------------------------------
+Problem
+  Test is a plain random sample. All 544 train/dev posts come from the targeted draw
+  (37 per label) plus 100 random ones. τ and the margin are tuned on dev, so they'd be
+  calibrated to a label mix the test set doesn't have. pool.ids.csv doesn't record which
+  trainval posts were random and which were targeted.
+
+Fix
+  1. Add a "draw" column to pool.ids.csv: "random" or "targeted".
+     In main(): tag each id in `picked` as targeted and each id from rng.sample(...) as
+     random before shuffling.
+  2. When splitting trainval into train/dev, take the 50 dev posts from the 100 random
+     ones only. The other 50 random + all targeted posts are train.
+  Re-run select_pool.py with the same seed before anyone labels (ids won't change; only
+  the new column is added).
+
+
+B2. Record which suggested labels were changed                           tools/annotate.py
+------------------------------------------------------------------------------------------
+Problem
+  Train/dev posts show an AI-suggested first-pass label. Without a record of changes, the
+  report can't show the review was real rather than click-through.
+
+Fix
+  Add "draft_primary" and "changed_from_draft" to COLUMNS. In save(), store the draft
+  label shown (post.get("draft_primary") or "") and
+  changed_from_draft = draft != "" and primary != draft.
+  Report: "we reviewed N AI-suggested labels and changed X%".
+
+
+B3. Urgency is pre-selected                                              tools/annotate.py
+------------------------------------------------------------------------------------------
+Problem
+  Urgency defaults to "routine" even on test posts, so it's easy to leave it by default.
+
+Fix
+  Start urgency with no value on test posts (value=None) and require it before saving,
+  like primary. Or drop urgency if nothing will use it.
+
+
+B4. Merge the 60 double-labelled test posts                               (no script yet)
+------------------------------------------------------------------------------------------
+Problem
+  Nothing turns two labels on the same post into one gold label.
+
+Fix
+  Small script: compute Cohen's κ on the 60 shared posts first, then write gold labels.
+  Rule suggestion: agree -> keep; disagree -> discuss and pick one, and record that it
+  was adjudicated. κ is reported on the labels before discussion.
+
+
+==========================================================================================
+C. BEFORE THE 8 OCT SUBMISSION
+==========================================================================================
+
+C1. Don't drop below the 500 manual-sample floor                          plan + labelling
+------------------------------------------------------------------------------------------
+Problem
+  The fallback "skip reviewing the train labels first" leaves unreviewed AI labels, which
+  aren't manual data. Then the manual set is only the 150 test posts.
+
+Fix
+  Review at least 350 train/dev posts (150 test + 350 = 500). If time runs short, cut the
+  double-labelled set before cutting the review.
+
+
+C2. Disclose the AI-suggested labels                                  report + GenAI log
+------------------------------------------------------------------------------------------
+Say in the data section and the GenAI log: train/dev labels were suggested by an AI
+assistant and confirmed or changed by us (with the change rate from B2); the 150 test
+labels are ours alone, with nothing pre-filled.
+
+
+C3. Pick the headline metric                                      plan + figure + report
+------------------------------------------------------------------------------------------
+Problem
+  The plan and the v3 figure say the headline is "model vs the human baseline", but the
+  form is "if there is time" on 7 Oct.
+
+Fix
+  Either send the form by 6 Oct, or make the headline "model vs 'always GP' and vs the
+  from-scratch router on our 150 test posts" and update the figure's Evaluate box.
+
+
+C4. Small tidy-ups
+------------------------------------------------------------------------------------------
+- Plan file is which-doctor-do-i-book.md with the old title; the repo and app are
+  "Doc Compass". Rename or retitle.
+- Local copies outside the repo (V2.md, doc-compass-plan.md) are out of date; the repo
+  version is the plan of record.
+- requirements.txt pins torch 2.14.1 / transformers 5.18.0; the notebook installs
+  transformers but relies on Colab's torch. Fine, just keep them in step.
+- Code and models are public on Hugging Face (ssg1/doc-compass) while the GitHub repo is
+  private. No post text is in the bundle, so this is fine; just a conscious choice.
