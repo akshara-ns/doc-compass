@@ -24,7 +24,7 @@ Check-in figure: `project1/checkin/checkin_figure.png` (source: `checkin/build_f
 
 | v1 plan | Problem found | v2 plan |
 |---|---|---|
-| Train routers on posts scraped from specialty subreddits (distant supervision) | Reddit's Data API Terms §3.2 forbid "using User Content to train a machine learning or AI model without the express permission of rightsholders"; the Developer Terms §4.2 and User Agreement ban scraping. New API apps need manual approval since Nov 2025 (weeks). Six of the planned subreddits are for professionals only, r/ENT is an entheogen community, r/Urology doesn't exist, and the patient-facing replacements are condition subreddits whose posts name the answer. | Train on our own 600-post training split. Add MedRedQA only if the instructor approves. |
+| Train routers on posts scraped from specialty subreddits (distant supervision) | Reddit's Data API Terms §3.2 forbid "using User Content to train a machine learning or AI model without the express permission of rightsholders"; the Developer Terms §4.2 and User Agreement ban scraping. New API apps need manual approval since Nov 2025 (weeks). Six of the planned subreddits are for professionals only, r/ENT is an entheogen community, r/Urology doesn't exist, and the patient-facing replacements are condition subreddits whose posts name the answer. | Train on our own 600-post training split. |
 | Headline metric: self-routing baseline (subreddit chosen vs gold label) | Every MediQ_AskDocs post comes from one general forum, so there is nothing to compare. It also depended on the subreddit data above. | **Human baseline:** 10–15 international students each pick a doctor for 20 redacted test posts. The model has to beat them. |
 | Gold set fully held out; nothing trained on it | Without distant supervision there is no other routing training data. | Split the 1,000 by post: 600 train, 100 dev, 300 test. The test split is never trained on or tuned against. |
 | Scrape iCliniq specialty sections as a fallback | iCliniq's Terms of Use forbid scraping "for commercial or any other purpose whatsoever"; HF copies have no specialty field. | Dropped. |
@@ -38,7 +38,7 @@ Check-in figure: `project1/checkin/checkin_figure.png` (source: `checkin/build_f
 
 ---
 
-## Questions for the instructor (check-in meeting)
+## Open questions (check-in meeting)
 
 In priority order for a 10-minute meeting. The Q numbers match the badges on the figure.
 
@@ -144,7 +144,7 @@ Checked on 27 Sep 2026 against the Hugging Face API, dataset files, papers and l
 | `stellalisy/MediQ_AskDocs` | ≈ 13.5k unique posts (20k / 3.2k / 620 rows in `original/`) | Real r/AskDocs posts 2013–2021, verbatim; chat format (`id, system, messages, context, question`); no subreddit, flair or specialty; some `u/` handles and image links | MIT on the card; Reddit origin | **Post pool for the 1,000.** Dedupe on text, skip `synthetic/`, key on the MediQ `id` |
 | `ildpil/text-anonymization-benchmark` (TAB) | 1,268 ECHR court judgments | Character offsets, direct / quasi / no-mask, several annotators per document | MIT | **Redaction schema, CRF training (train split), benchmark (test split).** Pick one annotator or merge |
 | `nvidia/Nemotron-PII` | 100k+ (card and viewer disagree) | Synthetic documents in 50+ domains including healthcare, 55+ PII labels | CC BY 4.0 | **CRF training / augmentation,** in `data/synthetic` |
-| `bagga005/medredqa` (mirror of CSIRO MedRedQA) | ≈ 40.8k / 5.1k / 5.1k | Real r/AskDocs posts; `occupation` = flair of the answering doctor (e.g. "Physician - Dermatologist") | CC BY-NC-SA 4.0 upstream; download asks you to confirm ethics approval | **Only if the instructor approves (Q3).** Overlaps MediQ: dedupe against our test split. Heavy dermatology skew from one prolific answerer; split by responder |
+| `bagga005/medredqa` (mirror of CSIRO MedRedQA) | ≈ 40.8k / 5.1k / 5.1k | Real r/AskDocs posts; `occupation` = flair of the answering doctor (e.g. "Physician - Dermatologist") | CC BY-NC-SA 4.0 upstream; download asks you to confirm ethics approval | **Optional extra training data (Q3).** Overlaps MediQ: dedupe against our test split. Heavy dermatology skew from one prolific answerer; split by responder |
 | `ai4privacy/pii-masking-300k` | ≈ 30k English train rows | Synthetic forms and emails | Custom: academic, no derivative works without written permission | **Dropped** |
 | Specialty subreddits (via API or Arctic Shift) | — | Where posters chose to ask | Reddit terms ban training without permission | **Dropped** |
 | iCliniq (scrape or HF copies) | 7.3k (copies) | Patient Q&A | Terms ban scraping; copies have no specialty field | **Dropped** |
@@ -159,7 +159,7 @@ Checked on 27 Sep 2026 against the Hugging Face API, dataset files, papers and l
 ## One-week task plan
 
 ### Day 1 · Decide and set up
-- [ ] Ask the instructor the meeting questions above; record the answers in this doc
+- [ ] Settle the open questions above and record the decisions in this doc
 - [ ] Create the ZeroGPU Space on whichever account has a free slot; deploy a hello-world Gradio app to confirm it works
 - [ ] Fix the label set: 8–10 bookable specialties plus "Start with a GP" and "Emergency"
 - [ ] Write the annotation guideline from public rubrics (NHS "which service" guidance, specialty scope-of-practice pages) with worked ambiguous examples
@@ -195,10 +195,10 @@ Checked on 27 Sep 2026 against the Hugging Face API, dataset files, papers and l
 
 | Risk | Mitigation |
 |---|---|
-| Instructor rules that annotating MediQ posts isn't "manual" | Switch the manual set to vignettes we write ourselves, based on the rubric categories, and keep MediQ as a public evaluation set. Decide on day 1. |
-| Instructor rules out Reddit-derived data entirely | Same fallback: self-written vignettes for training and testing, with the human-baseline form on those vignettes. |
+| Annotating MediQ posts doesn't count as manual data | Switch the manual set to vignettes we write ourselves, based on the rubric categories, and keep MediQ as a public evaluation set. Decide on day 1. |
+| Reddit-derived data can't be used at all | Same fallback: self-written vignettes for training and testing, with the human-baseline form on those vignettes. |
 | Annotation runs long | Label routing first; cut PII spans to 200; drop to 500 posts if the floor allows. |
-| ZeroGPU Space doesn't work or the quota is too small | Template-only rationale on CPU logic; fall back to a Colab link as in HW3 if the instructor accepts it. |
+| ZeroGPU Space doesn't work or the quota is too small | Template-only rationale on CPU logic; fall back to a Colab link as in HW3. |
 | Rare specialties get fewer than 20 test posts | Cap the label set at 8–10, merge rare ones, report per-class counts. |
 | "Start with a GP" dominates the labels | Report macro-F1 and an "always GP" baseline so a GP-only model can't look good. |
 | Redaction models trained on synthetic and legal text transfer badly to Reddit prose | That's a finding; report it. Presidio is the default in the Space if the CRF loses. |

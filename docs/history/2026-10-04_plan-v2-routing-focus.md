@@ -23,32 +23,32 @@ Check-in figure: `docs/checkin/checkin_figure.png`. It predates the 29 Sep updat
 
 | v1 plan | Problem found | v2 plan |
 |---|---|---|
-| Train routers on posts scraped from specialty subreddits (distant supervision) | Reddit's Data API Terms §3.2 forbid "using User Content to train a machine learning or AI model without the express permission of rightsholders"; the Developer Terms §4.2 and User Agreement ban scraping. New API apps need manual approval since Nov 2025 (weeks). Six of the planned subreddits are for professionals only, r/ENT is an entheogen community, r/Urology doesn't exist, and the patient-facing replacements are condition subreddits whose posts name the answer. | Train on our own 600-post training split. MedRedQA is approved by the instructor as optional extra training data. |
+| Train routers on posts scraped from specialty subreddits (distant supervision) | Reddit's Data API Terms §3.2 forbid "using User Content to train a machine learning or AI model without the express permission of rightsholders"; the Developer Terms §4.2 and User Agreement ban scraping. New API apps need manual approval since Nov 2025 (weeks). Six of the planned subreddits are for professionals only, r/ENT is an entheogen community, r/Urology doesn't exist, and the patient-facing replacements are condition subreddits whose posts name the answer. | Train on our own 600-post training split. MedRedQA is optional extra training data. |
 | Headline metric: self-routing baseline (subreddit chosen vs gold label) | Every MediQ_AskDocs post comes from one general forum, so there is nothing to compare. It also depended on the subreddit data above. | **Human baseline:** 10–15 international students each pick a doctor for 20 test posts. The model has to beat them. |
 | Gold set fully held out; nothing trained on it | Without distant supervision there is no other routing training data. | Split the 1,000 by post: 600 train, 100 dev, 300 test. The test split is never trained on or tuned against. |
 | Scrape iCliniq specialty sections as a fallback | iCliniq's Terms of Use forbid scraping "for commercial or any other purpose whatsoever"; HF copies have no specialty field. | Dropped. |
 | ai4privacy for PII augmentation | Custom licence: redistribution and derivative works need written permission. A public model trained on it is a derivative. | Use `nvidia/Nemotron-PII` (CC BY 4.0) if full redaction comes back later. |
 | "55,071 MediQ posts" | Rows repeat each post once per doctor question, and part of the repo is synthetic. | 10,366 unique real posts (checked 29 Sep). Deduplicate on post text and skip the `synthetic/` folder. |
-| Free CPU Space | Gradio Spaces on Hugging Face now need a paid plan (confirmed by the instructor). | Hosting is decided later. |
+| Free CPU Space | Gradio Spaces on Hugging Face now need a paid plan. | Hosting is decided later. |
 | LLM via an external API | Text would leave our app and go to a third party. | `Qwen/Qwen2.5-1.5B-Instruct`, run locally and used as-is (not trained), with a template fallback. It sees only the concern text and the router's output. |
 | Redact, then red-flag check | Our notes disagreed on the order. | Red-flag rules run first on the raw text, before anything else. |
 | Redaction as a full second task (Presidio, CRF, PII spans on 300 posts, TAB benchmark) | Splits a one-week build across two problems; on real posts Presidio also tagged durations and drug names, which would strip routing signal. | Out of scope for now. Routing is the focus; at most a simple rule-based scrub. Full redaction returns only if time allows. |
-| 1,000 posts × two full layers, 200 double-labelled, clinician on 100 | ≈ 40 person-hours before any modelling; no clinician recruited. | Routing labels on 1,000, 150 double-labelled, no PII spans. No clinician check: the instructor said annotation that needs experts, or isn't feasible, can be skipped. |
+| 1,000 posts × two full layers, 200 double-labelled, clinician on 100 | ≈ 40 person-hours before any modelling; no clinician recruited. | Routing labels on 1,000, 150 double-labelled, no PII spans. No clinician check: it needs an expert we don't have. |
 | Ten or more models | Too many for one week. | Core set below; everything else is a stretch goal. |
 
 ---
 
-## Questions for the instructor
+## Open questions
 
-**Answered**
+**Decided**
 
-- **(Q1) Manual data.** Labelling existing public posts counts, even simple labelling. Because the topic is medical, the instructor is lenient: label as many posts as is feasible.
-- **(Q2) Reddit-derived data.** Fine. MediQ_AskDocs can be used for training and evaluation.
-- **(Q3) MedRedQA.** Fine. A course project covers it.
+- **(Q1) Manual data.** Labelling existing public posts is our manual data. We label as many posts as is feasible.
+- **(Q2) Reddit-derived data.** MediQ_AskDocs is used for training and evaluation.
+- **(Q3) MedRedQA.** Optional extra training data.
 - **(Q4) Hosting.** Gradio Spaces on Hugging Face now need a paid plan. Hosting is decided later.
-- **(Q6) Training on the manual set.** Fine. Split by post into train / dev / test and never train or tune on the test split.
-- **(Q7) Model types.** TF-IDF + logistic regression counts as trained from scratch.
-- **Annotation.** Annotation that needs experts, or isn't feasible, can be skipped. The clinician check is dropped.
+- **(Q6) Training on the manual set.** Split by post into train / dev / test, and never train or tune on the test split.
+- **(Q7) Model types.** TF-IDF + logistic regression is our trained-from-scratch model.
+- **Annotation.** We skip annotation that needs an expert, so the clinician check is dropped.
 
 **Placeholder: decide later**
 
@@ -139,7 +139,7 @@ Checked on 27 Sep 2026 against the Hugging Face API, dataset files, papers and l
 | `stellalisy/MediQ_AskDocs` | 10,366 unique posts (20,000 / 3,210 / 620 rows in `original/`; 1,971 posts appear in more than one of MediQ's splits) | Real r/AskDocs posts 2013–2021, verbatim; chat format (`id, system, messages, context, question`); no subreddit, flair or specialty; some `u/` handles and image links | MIT on the card; Reddit origin | **Post pool for the 1,000.** Dedupe on text, skip `synthetic/`, ignore MediQ's splits. 1,309 posts carry more than one `id` root, so keep one id per post |
 | `ildpil/text-anonymization-benchmark` (TAB) | 1,268 ECHR court judgments | Character offsets, direct / quasi / no-mask, several annotators per document | MIT | **Only if full redaction comes back.** Schema, CRF training (train split), benchmark (test split). 1,014 / 127 / 127 documents; test documents have several annotators |
 | `nvidia/Nemotron-PII` | 100k train + 100k test rows: 50k documents per split, each in a US and an international version (the card counts documents) | Synthetic documents in 50+ domains including healthcare, 55+ PII labels | CC BY 4.0 | **Only if full redaction comes back.** CRF training, in `data/synthetic`. Mostly structured records; 1,860 healthcare free-text documents in train |
-| `bagga005/medredqa` (mirror of CSIRO MedRedQA) | ≈ 40.8k / 5.1k / 5.1k | Real r/AskDocs posts; `occupation` = flair of the answering doctor (e.g. "Physician - Dermatologist") | CC BY-NC-SA 4.0 upstream; download asks you to confirm ethics approval | **Approved by the instructor (Q3); optional extra training data.** Weak labels: the flair says who answered, not where to book, and only ≈ 12.8k of 50,991 rows name a bookable specialty (38% of those dermatology). 707 MediQ posts appear in it word for word: dedupe against our dev and test splits |
+| `bagga005/medredqa` (mirror of CSIRO MedRedQA) | ≈ 40.8k / 5.1k / 5.1k | Real r/AskDocs posts; `occupation` = flair of the answering doctor (e.g. "Physician - Dermatologist") | CC BY-NC-SA 4.0 upstream; download asks you to confirm ethics approval | **Optional extra training data (Q3).** Weak labels: the flair says who answered, not where to book, and only ≈ 12.8k of 50,991 rows name a bookable specialty (38% of those dermatology). 707 MediQ posts appear in it word for word: dedupe against our dev and test splits |
 | `ai4privacy/pii-masking-300k` | ≈ 30k English train rows | Synthetic forms and emails | Custom: academic, no derivative works without written permission | **Dropped** |
 | Specialty subreddits (via API or Arctic Shift) | — | Where posters chose to ask | Reddit terms ban training without permission | **Dropped** |
 | iCliniq (scrape or HF copies) | 7.3k (copies) | Patient Q&A | Terms ban scraping; copies have no specialty field | **Dropped** |
@@ -147,7 +147,7 @@ Checked on 27 Sep 2026 against the Hugging Face API, dataset files, papers and l
 | RedHOT | ≈ 22k | Condition subreddits | Text must be re-fetched via the Reddit API; IRB attestation | **Not used** |
 | i2b2 / n2c2, PhysioNet de-id | — | Real clinical notes with PHI | Credentialed access + DUA | **Not used** — no real medical PII corpus is openly available |
 
-**Annotation estimate:** routing labels ≈ 75 s per post × 1,000 ≈ 21 h, spread across both of us. Double-labelling 150 posts ≈ 3 h. Pilot ≈ 1 h. Total ≈ 25 person-hours, about 12–13 hours each. If time runs short, label fewer: the instructor asked for what is feasible. No clinician check (needs an expert).
+**Annotation estimate:** routing labels ≈ 75 s per post × 1,000 ≈ 21 h, spread across both of us. Double-labelling 150 posts ≈ 3 h. Pilot ≈ 1 h. Total ≈ 25 person-hours, about 12–13 hours each. If time runs short, label fewer. No clinician check (needs an expert).
 
 ---
 

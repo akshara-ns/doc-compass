@@ -29,7 +29,7 @@ Written 9 Oct 2026 for the Project 1 report. It holds what was only on Sohum's m
 
 **For the reflection.** The assistant was fast and usually right about code, and confidently wrong about things it had not measured. Every correction above came from measuring on real data or from a person pushing back. The rule that helped most: no number goes in a document unless a run produced it.
 
-**What `proj.txt` is.** A local copy of the instructor's Project 1 brief, the presentation guide and the report template, pasted from the course site. It is not in the repo. Its report requirements are in section 9.
+**What `proj.txt` is.** A local copy of the Project 1 brief, the presentation guide and the report template, pasted from the course site. It is not in the repo. Its report requirements are in section 9.
 
 ## 2. What I built on 4–5 Oct and why
 
