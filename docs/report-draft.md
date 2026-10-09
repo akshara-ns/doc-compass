@@ -8,11 +8,11 @@ CMU 24-679, Project 1
 
 ## Executive Summary
 
-In the US, patients often choose and book a specialist themselves, and a wrong choice costs a copay and weeks of waiting. Doc Compass is a self-help tool that reads a health concern in plain language and suggests which kind of doctor to book. It routes; it never diagnoses.
+In the US, patients often pick and book a specialist themselves, and a wrong pick costs a copay and weeks of waiting. Doc Compass is a self-help tool that reads a health concern in plain language and suggests which kind of doctor to book. It routes; it never diagnoses.
 
 A request passes through an emergency check, a scrub of obvious identifiers, a router that returns the top three of eleven specialties or "Start with a GP", and a short explanation with questions to bring. We labelled 734 real patient posts, compared a router trained from scratch with two fine-tuned ones, and used an off-the-shelf language model for the explanation and a second emergency check.
 
-On 115 of our own test posts the shipped router, BiomedBERT, picks the labelled doctor 60.9% of the time and has it in its top three 90.4% of the time. Always answering "Start with a GP" scores 40.9%. When the router is unsure, the app shows two options and lets the user decide. The emergency check is the weak point: on real posts it misses 13 of 38 emergencies, so it catches clearly stated warning signs and no more. The app runs from a Colab notebook.
+On 115 of our own test posts the shipped router, BiomedBERT, picks the labelled doctor 60.9% of the time and has it in its top three 90.4% of the time. Always answering "Start with a GP" scores 40.9%. When the router is unsure, the app shows two options and lets the user decide. The emergency check is the weak point: on real posts it misses 13 of 38 emergencies, so it catches clearly stated warning signs and no more.
 
 ---
 
