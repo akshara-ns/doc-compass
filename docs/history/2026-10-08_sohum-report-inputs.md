@@ -4,7 +4,7 @@ Written 9 Oct 2026 for the Project 1 report. It holds what was only on Sohum's m
 
 ## 1. GenAI log
 
-**Tools.** Claude Code (Anthropic's coding assistant) in VS Code, for almost everything below. Two short suggestions on training strategy were pasted in from another assistant and checked before use (**Sohum to confirm** which tool). Qwen is part of the product, not a development aid. A Groq API key was set up and never used.
+**Tools.** Claude Code (Anthropic's coding assistant) in VS Code, for almost everything below. Gemini was used early on to brainstorm the initial strategy; two of its suggestions on training were checked against the data before use. Qwen is part of the product, not a development aid. A Groq API key was set up and never used.
 
 | Used for | What it did | How it went |
 |---|---|---|
@@ -113,21 +113,21 @@ Both were one-off scripts run on 5 Oct on Sohum's laptop (Apple M4, PyTorch on M
 
 - The slide deck was built by Akshara from the draft in `docs/history/2026-10-04_slides-draft-revised.txt`.
 - Someone in the audience found a concern that should have been an emergency and was routed to a specialty. Sohum had found the same kind of miss that morning ("left face stroke" went to Dermatology). This led to the second emergency layer and the measurements in `docs/emergency-check-results.md`.
-- Instructor feedback, the other questions asked, and what the audience member typed: **Sohum to confirm.**
+- Another question: some specialists can never be booked directly and must go through a GP, so what is the tool for? Sohum's answer: it is a self-help assistant. It makes you aware of the care path you are on, so you can tell whether you are being routed to the right destination.
+- What the audience member typed for the missed emergency was not recorded.
 - Demo video: Sohum planned to screen-record the app. Whether it exists and where it is: **Sohum to confirm.**
 
 ## 7. Contributions
 
 - **In the repo:** 11 commits on 4–5 Oct, plus the merge of `sg` into `main`. They cover everything in section 2: the package, the stage-1 routers, the Qwen explanation, both emergency layers and their measurement, the app design, the Colab notebook and the first published bundle, the label set and mapping, the choice of posts, the 4 Oct system figure, and the slide draft.
 - **Outside the repo:** the dataset checks and searches, the two emergency-classifier experiments, and on 9 Oct the check that the stage-2 results reproduce.
-- **Hours, and anything to credit:** **Sohum to confirm.**
 
 ## 8. My reflection
 
 A draft from the working log, for Sohum to edit.
 
 - **Went well.** Getting the whole app working on public data before any labels existed meant the demo was real, and it showed exactly where public data breaks. Measuring missed emergencies on real, clinician-labelled posts changed what we claim: the check catches clearly stated warning signs, it does not detect emergencies.
-- **Went poorly.** We trusted cases we wrote ourselves (1 of 40 emergencies missed) until real posts showed 13 of 38 missed. The emergency rules shipped to the presentation with gaps a classmate found in minutes. Labelling started late, so the test set is 115 posts and three labels have one test post each.
+- **Went poorly.** We trusted cases we wrote ourselves (1 of 40 emergencies missed) until real posts showed 13 of 38 missed. The emergency rules went to the presentation with gaps that someone in the audience found. Labelling started late, so the test set is 115 posts and three labels have one test post each.
 - **Would do differently.** Label a small real test set in the first days, before building anything, and measure everything against it. Write the emergency test cases before the rules, and have someone else write them. Keep throwaway experiment code, since the report needed it.
 
 ## 9. Report requirements (from `proj.txt`)
