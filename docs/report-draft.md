@@ -135,7 +135,7 @@ The app is built with Gradio, which gave us a working page in Python and a publi
 
 ![Red sign for "My toddler drank some drain cleaner"](demo-images/red-1.png)
 
-**3. One clear answer.** A blue sign names the doctor to book and what that doctor covers, with the router's top three and their confidence underneath. Here the concern is about hair, with no mention of skin, and the router still picks Dermatology at 76%.
+**3. One clear answer.** A blue sign names the doctor to book and what that doctor covers, with the router's top three and their confidence underneath. Here the concern is hair loss with no rash or itch, and the router still picks Dermatology at 76%.
 
 ![Blue sign: Dermatology for bald patches on the scalp](demo-images/blue.png)
 
@@ -193,7 +193,13 @@ The app is built with Gradio, which gave us a working page in Python and a publi
 
 ## To check before this becomes the PDF (delete this section)
 
-- Every number is from `docs/routing-results.md`, `docs/emergency-check-results.md` or `docs/data-card.md`.
-- The "always GP" top-3 is a dash here, not the 53.0% in the results doc. That baseline only ever gives one answer; the 53.0% comes from the scoring code filling its second and third slots with the first two labels in the list.
-- The screenshots are from the Colab app on 9 Oct, with made-up inputs.
-- Keep the executive summary under 200 words if you edit it.
+Checked on 9 Oct:
+
+- Every number matches `docs/routing-results.md`, `docs/emergency-check-results.md` or `docs/data-card.md`, and the training settings match the scripts.
+- The two red-sign examples match none of the written rules, so the language-model check is what caught them.
+- All seven images load. The screenshots are from the Colab app on 9 Oct, with made-up inputs.
+- The executive summary is 193 words.
+
+Still to decide:
+
+- The "always GP" top-3 is a dash here, not the 53.0% in the results doc. That baseline only ever gives one answer; the 53.0% comes from the scoring code filling its second and third slots with the first two labels in the list. Keep the dash or switch to 53.0%.
