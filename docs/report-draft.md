@@ -108,7 +108,7 @@ Both fine-tuned routers beat the baseline. The two are tied on top-1; BiomedBERT
 
 ### 2.5 The emergency check
 
-Eleven written rules, each quoting a published warning sign (MedlinePlus, CDC), run first. If none fires, Qwen is shown the full published list and asked whether the message describes any of those signs happening now.
+Eleven written rules, each quoting a published warning sign (MedlinePlus, CDC), run first. But an emergency can be worded in too many ways for rules to list, so a language model takes a second look: if no rule fires, Qwen is shown the full published list and asked whether the message describes any of those signs happening now.
 
 | Tested on | Rules alone | Rules plus Qwen |
 |---|---|---|
@@ -125,16 +125,31 @@ The app is built with Gradio, which gave us a working page in Python and a publi
 
 ## 3. User Experience and Workflow
 
-1. **Describe the concern.** The user types a sentence or two, or picks a made-up example.
-   *[Screenshot: the empty app with the text box and examples]*
-2. **Emergency check.** If a warning sign is found, a red sign says "Seek emergency care now", with the reason and its source. Nothing else runs.
-   *[Screenshot: the red sign for "sudden crushing chest pain"]*
-3. **One clear answer.** A blue sign names the doctor to book and what that doctor covers.
-   *[Screenshot: the blue sign for an itchy rash, Dermatology]*
-4. **Two options.** When the router is unsure, an amber sign shows two doctors and the user decides. "Start with a GP" is always offered.
-   *[Screenshot: the amber sign for "my gums bleed when I brush my teeth"]*
-5. **Reason and questions.** One sentence links what the user wrote to what that doctor covers, followed by three questions to think about before the visit.
-6. **Book the visit.** This happens outside the app.
+**1. Describe the concern.** The user types a sentence or two, or picks a made-up example. The page says what will happen and that nothing is stored.
+
+![The app before anything is typed](demo-images/empty.png)
+
+**2. Emergency check.** If a warning sign is found, a red sign says "Seek emergency care now" and the rest of the app does not run. Neither message below matches a written rule; the language-model check caught both, and the app says so.
+
+![Red sign for "Half of my face won't move and I'm drooling out of one corner of my mouth"](demo-images/red-2.png)
+
+![Red sign for "My toddler drank some drain cleaner"](demo-images/red-1.png)
+
+**3. One clear answer.** A blue sign names the doctor to book and what that doctor covers, with the router's top three and their confidence underneath. Here the concern is about hair, with no mention of skin, and the router still picks Dermatology at 76%.
+
+![Blue sign: Dermatology for bald patches on the scalp](demo-images/blue.png)
+
+**4. A vague concern.** Tiredness, dizziness and weight loss have no single obvious specialty, so the app says to start with a GP.
+
+![Blue sign: Start with a GP for tiredness, dizziness and weight loss](demo-images/vague-GP.png)
+
+**5. Two options.** When the router is unsure, an amber sign shows two doctors and the user decides. A clicking jaw with a sore back tooth could be a joint problem or a dental one, and the router scores them equally at 18%.
+
+![Amber sign: Orthopedics or Dentistry for a clicking jaw and an aching tooth](demo-images/amber.png)
+
+**6. Reason and questions.** Under every result, one sentence links what the user wrote to what that doctor covers ("You described patches of baldness on your scalp, and Dermatology looks after skin conditions, hair issues, and nail problems"), followed by three questions to think about before the visit. A note says the language model wrote these and did not choose the doctor.
+
+**7. Book the visit.** This happens outside the app. "Start with a GP" is offered on every result.
 
 | Situation | What the app does |
 |---|---|
@@ -178,8 +193,7 @@ The app is built with Gradio, which gave us a working page in Python and a publi
 
 ## To check before this becomes the PDF (delete this section)
 
-- Add the four screenshots in section 3.
-- Timing: "a few seconds" for a full answer was measured on a laptop with the stage-1 router (about 3 s for the explanation, about 1 s for the second emergency check). It was not timed on Colab.
-- The "15 of 16 explanations passed" check is not quoted here because it was run with the stage-1 router.
-- Every number is from `docs/routing-results.md`, `docs/emergency-check-results.md` or `docs/data-card.md`. The "always GP" top-3 is shown as a dash on purpose: that baseline gives one answer, so the 53.0% in the results doc is an artifact of label order.
-- The executive summary must stay under 200 words.
+- Every number is from `docs/routing-results.md`, `docs/emergency-check-results.md` or `docs/data-card.md`.
+- The "always GP" top-3 is a dash here, not the 53.0% in the results doc. That baseline only ever gives one answer; the 53.0% comes from the scoring code filling its second and third slots with the first two labels in the list.
+- The screenshots are from the Colab app on 9 Oct, with made-up inputs.
+- Keep the executive summary under 200 words if you edit it.
