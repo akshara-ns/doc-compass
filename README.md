@@ -43,7 +43,7 @@ The emergency check (rules plus Qwen) misses 13 of 38 emergencies in real posts 
 
 Details: [routing results](docs/routing-results.md) · [emergency check](docs/emergency-check-results.md) · [data card](docs/data-card.md)
 
-## Try it (for graders)
+## To run the app
 
 The app runs in Google Colab; there is no permanent hosted link, because Gradio Spaces on Hugging Face need a paid plan. Nothing to install, and nothing you type is stored.
 
@@ -78,9 +78,8 @@ The routers must be trained first; the commands are in [docs/routing-results.md]
 |---|---|
 | `doccompass/` | the app: rules, routers, pipeline, Gradio interface |
 | `scripts/` | data prep, training, evaluation, publishing |
-| `tools/annotate.py` | the labelling tool (see `LABELLING.md`) |
-| `docs/` | results, data card, label set, system figures |
-| `doc-compass-plan.md` | the full plan |
+| `tools/annotate.py` | the labelling tool (see `docs/labelling.md`) |
+| `docs/` | the plan, results, data card, label set, labelling guide and system figure |
 
 ## Data rules
 

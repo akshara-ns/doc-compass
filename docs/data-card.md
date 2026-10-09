@@ -38,7 +38,7 @@ Post text is never committed. `scripts/prepare_data.py` downloads it from the pi
 | `split` | `train`, `dev`, `test`, `emergency` or `skip` |
 | `source` | `draft` for every row in this version |
 
-The label definitions are in `docs/label-set.md`. The Emergency definition, the 22 warning signs from MedlinePlus and the CDC, is in `LABELLING.md`.
+The label definitions are in `docs/label-set.md`. The Emergency definition, the 22 warning signs from MedlinePlus and the CDC, is in `docs/labelling.md`.
 
 ### Counts
 
