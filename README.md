@@ -43,7 +43,22 @@ The emergency check (rules plus Qwen) misses 13 of 38 emergencies in real posts 
 
 Details: [routing results](docs/routing-results.md) · [emergency check](docs/emergency-check-results.md) · [data card](docs/data-card.md)
 
-## Run it
+## Try it (for graders)
+
+The app runs in Google Colab; there is no permanent hosted link, because Gradio Spaces on Hugging Face need a paid plan. Nothing to install, and nothing you type is stored.
+
+1. Open [`notebooks/doc_compass_app.ipynb`](notebooks/doc_compass_app.ipynb) in [Google Colab](https://colab.research.google.com): download the file, then in Colab choose **File → Upload notebook**.
+2. Choose **Runtime → Change runtime type → T4 GPU**, then **Save**. Without a GPU the app still works, but the language model isn't loaded: emergencies are checked by the written rules only, and explanations use fixed wording.
+3. Choose **Runtime → Run all**. The first run takes a few minutes: it downloads the app and routers from [`akshara-ns/doc-compass`](https://huggingface.co/akshara-ns/doc-compass) and the language model (about 3 GB).
+4. The last cell opens the app inside the notebook and prints a public link and QR code. The link works while the notebook is running and is new on every run.
+5. Try the made-up examples under the text box, or your own wording. For example:
+   - an itchy rash → a blue sign, Dermatology
+   - "my gums bleed when I brush my teeth" → an amber sign with two options, because the router is unsure
+   - sudden crushing chest pain → a red "Seek emergency care now" sign, and the router doesn't run
+
+To stop the app, run `import gradio; gradio.close_all()` or disconnect the runtime.
+
+## Run it locally
 
 Needs Python 3.11 or newer.
 
@@ -55,7 +70,7 @@ python -m doccompass.app --llm     # the app at http://127.0.0.1:7860, with Qwen
 pytest
 ```
 
-The routers must be trained first; the commands are in [docs/routing-results.md](docs/routing-results.md#reproduce). Or run the hosted version: `notebooks/doc_compass_app.ipynb` opens the app in Colab (T4 GPU) and prints a public link and QR code.
+The routers must be trained first; the commands are in [docs/routing-results.md](docs/routing-results.md#reproduce).
 
 ## Repo
 
