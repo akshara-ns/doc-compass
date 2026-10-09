@@ -82,7 +82,6 @@ The routers must be trained first; the commands are in [docs/routing-results.md]
 | `scripts/` | data prep, training, evaluation, publishing |
 | `tools/annotate.py` | the labelling tool (see `docs/labelling.md`) |
 | `docs/` | the plan, results, data card, label set, labelling guide and system figure |
-| `docs/history/` | earlier plans, reviews and notes, showing how the project changed |
 
 ## Data rules
 
