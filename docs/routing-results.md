@@ -42,7 +42,7 @@ Measured 8 Oct 2026 on Akshara's laptop (Apple M5, PyTorch on MPS). Every number
 - **Stage 1 (public only):** retrained on this laptop from the public Patient Comments set. On its 938 held-out comments: TF-IDF 94.0% top-1, DistilRoBERTa 95.0%, BiomedBERT 94.3%. (Sohum's run got 94.3% for DistilRoBERTa; training on a different machine is not bit-for-bit repeatable.)
 - **Ours only:** TF-IDF + logistic regression, and each encoder from its original weights, on our 362 train posts.
 - **Public, then ours:** each encoder continued from its stage-1 checkpoint on our train posts. For TF-IDF there is no second stage, so this row is one model trained on our posts and the public set together.
-- Encoders: all weights trained, 6 epochs, learning rate 2e-5, the epoch with the best dev macro-F1 kept. Posts were cut to **384 tokens** (the plan said 512) and trained in batches of 4 with gradients added over 2 steps, so training fits in the laptop's memory. 28% of train and dev posts are longer than 256 tokens; none is longer than 512. Scoring uses up to 512 tokens, as the app does.
+- Encoders: all weights trained, 6 epochs, learning rate 2e-5, the epoch with the best dev macro-F1 kept. Posts were cut to **384 tokens** (the plan said 512) and trained in batches of 4 with gradients added over 2 steps, so training fits in the laptop's memory. Counted with each encoder's own tokenizer, 40 of the 412 train and dev posts (9.7%) are longer than 384 tokens, so their endings were cut in training. Scoring uses up to 512 tokens, as the app does; a few posts are longer even than that (train and dev: 2 for DistilRoBERTa, 4 for BiomedBERT; test: 2 and 4 of 115), and their endings are cut in scoring too.
 
 ## Dev: picking the version of each router
 
@@ -50,7 +50,7 @@ Our 50 dev posts. "Top-1, alternate counts" scores a hit when the top choice is 
 
 | Router | Top-1 (95% CI) | Top-3 | Top-1, alternate counts | Macro-F1 |
 |---|---|---|---|---|
-| Always "Start with a GP" | 44.0% (30.0–58.7%) | 52.0% | 72.0% | 0.051 |
+| Always "Start with a GP" | 44.0% (30.0–58.7%) | – | 72.0% | 0.051 |
 | TF-IDF, public only | 32.0% (19.5–46.7%) | 68.0% | 68.0% | 0.160 |
 | TF-IDF, ours only | 50.0% (35.5–64.5%) | 84.0% | 80.0% | 0.217 |
 | TF-IDF, public and ours | 46.0% (31.8–60.7%) | 78.0% | 70.0% | 0.263 |
@@ -60,6 +60,8 @@ Our 50 dev posts. "Top-1, alternate counts" scores a hit when the top choice is 
 | BiomedBERT, public only | 44.0% (30.0–58.7%) | 88.0% | 74.0% | 0.180 |
 | BiomedBERT, ours only | 54.0% (39.3–68.2%) | 90.0% | 80.0% | **0.473** |
 | BiomedBERT, public then ours | 52.0% (37.4–66.3%) | 98.0% | 78.0% | 0.378 |
+
+"Always GP" gives one answer, so it has no top three. The scoring code would fill its second and third slots with the first two labels in the list (Dermatology and Orthopedics), which gives 52.0% on dev and means nothing, so it is left out.
 
 - **Training on our posts helps every router**, most clearly in macro-F1 (TF-IDF 0.160 → 0.263, DistilRoBERTa 0.312 → 0.419, BiomedBERT 0.180 → 0.473). Public data alone transfers poorly: the public comments are one short line, our posts are paragraphs.
 - **Public first, then ours, is mixed.** It is the best version of DistilRoBERTa and of TF-IDF on macro-F1, but not of BiomedBERT. With 50 dev posts these gaps are within the intervals.
@@ -77,10 +79,12 @@ Our 115 test posts, scored once.
 
 | Router | Top-1 (95% CI) | Top-3 | Top-1, alternate counts | Macro-F1 | Time per post |
 |---|---|---|---|---|---|
-| Always "Start with a GP" | 40.9% (31.8–50.4%) | 53.0% | 88.7% | 0.048 | – |
+| Always "Start with a GP" | 40.9% (31.8–50.4%) | – | 88.7% | 0.048 | – |
 | TF-IDF, public and ours (from scratch) | 48.7% (39.3–58.2%) | 84.3% | 80.0% | 0.428 | 0.2 ms |
 | DistilRoBERTa, public then ours (fine-tuned) | 59.1% (49.6–68.2%) | 91.3% | 81.7% | 0.523 | 37 ms |
 | **BiomedBERT, ours only (fine-tuned, shipped)** | **60.9% (51.3–69.8%)** | **90.4%** | **83.5%** | **0.611** | 78 ms |
+
+"Always GP" gives one answer, so it has no top three. The scoring code would fill its second and third slots with the first two labels in the list (Dermatology and Orthopedics), which gives 53.0% on test and means nothing, so it is left out.
 
 Time per post is the average when scoring all 115 test posts on the laptop, in batches of 32 for the encoders. A single request in the app takes longer.
 

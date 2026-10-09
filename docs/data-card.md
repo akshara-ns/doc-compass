@@ -64,7 +64,7 @@ The label definitions are in `docs/label-set.md`. The Emergency definition, the 
 
 | Source | Used for | Size | Licence and terms |
 |---|---|---:|---|
-| `stellalisy/MediQ_AskDocs`, revision `f215fd4` | The posts we label | 10,366 unique posts (2013–2021) | MIT on the dataset card. The posts were written by Reddit users; Reddit's terms restrict training models on its content, and our instructor agreed that using this researcher-released dataset is acceptable for the course. We did not scrape Reddit. |
+| `stellalisy/MediQ_AskDocs`, revision `f215fd4` | The posts we label | 10,366 unique posts (2013–2021) | MIT on the dataset card. The posts were written by Reddit users; Reddit's terms restrict training models on its content. We used this researcher-released dataset and did not scrape Reddit. |
 | Patient Comments and Specialist Types (Mendeley Data, DOI 10.17632/2twgjzpn82.2) | Stage-1 training only | 6,252 unique comments | CC BY 4.0. The comments appear to be generated rather than written by patients (emoji matched to each symptom, inserted typos), so we treat them as synthetic. |
 | PMR-Reddit test pairs (`PortalPal-AI/PMR-Reddit-Test-Pairs`) | Testing the emergency check only | 362 posts | CC BY-NC 4.0. Urgency read from verified clinicians' replies. |
 | Our written cases | Testing the emergency check only | 80 messages | Ours. |
