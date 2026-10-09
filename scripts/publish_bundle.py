@@ -58,7 +58,7 @@ Labels: {", ".join(LABELS)}.
 
 {metrics['train_rows']} real r/AskDocs posts from `stellalisy/MediQ_AskDocs` (MIT on the dataset card; the posts
 come from Reddit), each labelled with the kind of doctor to book. The labels were drafted by an AI
-assistant from a written guideline and used without human review. No post text is in this repo.
+assistant from a written guideline and reviewed by the authors. No post text is in this repo.
 
 The TF-IDF router was trained on the same posts plus *Patient Comments and Specialist Types*
 (Mendeley Data, DOI 10.17632/2twgjzpn82.2, CC BY 4.0), a public set of short comments that
@@ -70,7 +70,7 @@ On {dev['n']} dev posts the router scores {dev['top1']:.1%} top-1 and {dev['macr
 where it was chosen. On {TEST['n']} test posts, scored once, it scores {TEST['top1']:.1%} top-1
 (95% CI {low:.1%}–{high:.1%}), {TEST['top3']:.1%} top-3 and {TEST['macro_f1']:.3f} macro-F1, against {TEST['always_gp_top1']:.1%}
 for always answering "Start with a GP" and {TEST['tfidf_top1']:.1%} for the TF-IDF router. The test labels are
-the same AI-drafted labels, so this measures agreement with that labeller, not with a clinician.
+the same labels, so this measures agreement with them, not with a clinician.
 
 ## Limits
 

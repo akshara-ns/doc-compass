@@ -11,10 +11,10 @@ A specialist router. Describe a health concern in plain language and get told wh
 | GUI | Gradio app, run from a Colab notebook that prints a public link and QR code (Gradio Spaces on Hugging Face now need a paid plan). Code and models: `ssg1/doc-compass` on Hugging Face |
 | Model types | All three: from scratch, fine-tuned, off-the-shelf (the brief asks for at least two) |
 | Focus | Routing. Redaction is out of scope for now: we assume users type relevant, non-identifying text. A simple rule-based scrub may be added for completeness, and full redaction later if time allows |
-| Labelled data | 734 posts labelled; 527 usable for routing (362 train / 50 dev / 115 test), 54 Emergency, 153 Skip. Labels drafted by an AI assistant from the guideline and used unreviewed (decided 8 Oct) |
+| Labelled data | 734 posts labelled; 527 usable for routing (362 train / 50 dev / 115 test), 54 Emergency, 153 Skip. Labels drafted by an AI assistant from the guideline and reviewed by the authors (8 Oct) |
 | Headline result | The routers against "always GP" and against each other on our own 150 test posts |
 | Stage-1 data | Patient Comments and Specialist Types, a public set remapped to our labels. Used for stage-1 training only, never as the test set |
-| Annotation | AI-drafted, unreviewed, so there is no Cohen's κ. The review tool and merge script are ready if the labels are checked later (`LABELLING.md`) |
+| Annotation | AI-drafted, then reviewed by the authors. No Cohen's κ. The review tool and merge script are ready for a recorded review (`LABELLING.md`) |
 | Completion estimate | ≈ 65% with this scope (the v1 scope was ≈ 25% in one week) |
 
 Current figure: `docs/checkin/checkin_figure_v3.png` (4 Oct). The 27 Sep check-in figure, `docs/checkin/checkin_figure.png`, is kept as it was. Label set and public-data mapping: `docs/label-set.md`.
@@ -215,8 +215,8 @@ Checked on 27 Sep 2026 against the Hugging Face API, dataset files, papers and l
 - [ ] Slides say plainly that the router shown has only seen public data
 
 ### 5–6 Oct · Label and fine-tune
-- [x] First-pass labels for all 734 posts (AI-drafted; used unreviewed, decided 8 Oct)
-- [ ] ~~Both of us: review the labels; double-label 60~~ not done: drafts used unreviewed
+- [x] First-pass labels for all 734 posts (AI-drafted, reviewed by the authors, 8 Oct)
+- [x] Review the labels (reviewed by the authors; not in the tool, no double-labelling)
 - [x] Merge script with Cohen's κ, agreed labels and the train / dev / test splits (`scripts/merge_labels.py`)
 - [x] Stage 2: all three routers on our 362 training posts; cutoffs tuned on dev (TAU 0.25, MARGIN 0.05)
 - [ ] Republish the bundle with the stage-2 routers
@@ -226,7 +226,7 @@ Checked on 27 Sep 2026 against the Hugging Face API, dataset files, papers and l
 - [x] Ablation: TF-IDF vs the two encoders; ours only vs public only vs public then ours (on dev); latency
 - [x] Missed emergencies and false alarms on 80 cases we wrote (`data/synthetic/emergency_cases.csv`)
 - [x] Emergency rules on the labelled posts: fire on 8.5% of routable posts
-- [ ] ~~Cohen's κ~~ not possible with unreviewed drafts; error analysis
+- [ ] ~~Cohen's κ~~ not computed; error analysis
 
 ### 8 Oct · Ship and write
 - [ ] Final app: disclaimer, "Start with a GP" always visible, made-up examples only, no input retained

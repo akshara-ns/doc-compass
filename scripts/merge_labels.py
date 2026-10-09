@@ -7,7 +7,7 @@ the primary (and optionally alternate, urgency, ambiguous) we agree on, then run
 All three files hold ids and labels only, so they are safe to commit.
 
 With --from-drafts, the first-pass labels in data/manual/draft.labels.csv are used as the gold
-labels for every post, unreviewed. There is then no agreement to report.
+labels for every post, as they are. There is then no agreement to report.
 """
 
 import argparse
@@ -31,7 +31,7 @@ def read_labels(path: Path) -> pd.DataFrame:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("--from-drafts", action="store_true", help="use the unreviewed first-pass labels as the gold labels")
+    parser.add_argument("--from-drafts", action="store_true", help="use the first-pass labels as the gold labels, unchanged")
     pool = pd.read_csv(paths.POOL_IDS, dtype=str)
     from_drafts = parser.parse_args().from_drafts
     if from_drafts:

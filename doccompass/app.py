@@ -54,6 +54,11 @@ CSS = """
 .dc-sign .dc-big {font-size: 2.1rem; line-height: 1.12; font-weight: 700; letter-spacing: -0.01em; margin: 2px 0 4px;}
 .dc-sign .dc-sub {font-size: 0.98rem; opacity: 0.92; max-width: 46ch;}
 .dc-sign.dc-junction {background: var(--dc-amber); color: #1C1503;}
+/* Gradio styles <p> and SVG shapes inside gr.HTML with its own colours; force the sign colours. */
+.dc-sign:not(.dc-empty) p {color: #FFFFFF !important;}
+.dc-sign.dc-junction p {color: #1C1503 !important;}
+.dc-sign:not(.dc-empty) svg [stroke] {stroke: #FFFFFF !important;} .dc-sign:not(.dc-empty) svg [fill="currentColor"] {fill: #FFFFFF !important;}
+.dc-sign.dc-junction svg [stroke] {stroke: #1C1503 !important;} .dc-sign.dc-junction svg [fill="currentColor"] {fill: #1C1503 !important;}
 .dc-sign.dc-emergency {background: var(--dc-red);}
 .dc-sign.dc-empty {background: transparent; color: var(--dc-muted); border: 1.5px dashed var(--dc-line);}
 .dc-sign.dc-empty .dc-big {font-size: 1.25rem; color: var(--dc-ink);}

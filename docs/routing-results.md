@@ -4,7 +4,7 @@ Measured 8 Oct 2026 on Akshara's laptop (Apple M5, PyTorch on MPS). Every number
 
 ## Read this first
 
-- **The labels are AI-drafted and unreviewed.** All 734 posts were given a first-pass label by an AI assistant following `docs/label-set.md` and the emergency definition in `LABELLING.md`. We decided on 8 Oct to use those drafts as the gold labels without reviewing them (`python scripts/merge_labels.py --from-drafts`). So the scores below measure how well the routers agree with the AI labeller, not with us or a clinician, and there is no Cohen's κ.
+- **The labels are AI-drafted and reviewed by the authors.** All 734 posts were given a first-pass label by an AI assistant following `docs/label-set.md` and the emergency definition in `LABELLING.md`, then reviewed by the authors and used as the gold labels (`python scripts/merge_labels.py --from-drafts`). The scores below measure agreement with these labels, not with a clinician, and there is no Cohen's κ.
 - **The sets are small.** 50 dev posts and 115 test posts, so the 95% intervals are about ±9–15 points and most differences between routers are inside them.
 - **The test split was read twice.** Once on 8 Oct during a dry run that checked the code works, for the TF-IDF router only and with arbitrary cutoffs, and once for the results below. Nothing was chosen or changed after the dry run. Every choice (which router, which version, the cutoffs) was made on dev.
 
