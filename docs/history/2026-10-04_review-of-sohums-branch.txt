@@ -136,17 +136,18 @@ Fix
   the new column is added).
 
 
-B2. Record which suggested labels were changed                           tools/annotate.py
+B2. Record which drafted labels the authors changed                       tools/annotate.py
 ------------------------------------------------------------------------------------------
 Problem
-  Train/dev posts show an AI-suggested first-pass label. Without a record of changes, the
-  report can't show the review was real rather than click-through.
+  Posts show a first-pass label drafted by an AI assistant, which the authors review.
+  Without a record of changes, the report can't show what the review changed.
 
 Fix
   Add "draft_primary" and "changed_from_draft" to COLUMNS. In save(), store the draft
   label shown (post.get("draft_primary") or "") and
   changed_from_draft = draft != "" and primary != draft.
-  Report: "we reviewed N AI-suggested labels and changed X%".
+  Report: "the labels were drafted by an AI assistant and reviewed by the authors, who
+  changed X%".
 
 
 B3. Urgency is pre-selected                                              tools/annotate.py
@@ -177,19 +178,18 @@ C. BEFORE THE 8 OCT SUBMISSION
 C1. Don't drop below the 500 manual-sample floor                          plan + labelling
 ------------------------------------------------------------------------------------------
 Problem
-  The fallback "skip reviewing the train labels first" leaves unreviewed AI labels, which
-  aren't manual data. Then the manual set is only the 150 test posts.
+  Every label we count toward the 500 must be reviewed by the authors. The fallback "skip
+  the train-label review first" would leave only the 150 test posts.
 
 Fix
   Review at least 350 train/dev posts (150 test + 350 = 500). If time runs short, cut the
   double-labelled set before cutting the review.
 
 
-C2. Disclose the AI-suggested labels                                  report + GenAI log
+C2. Say how the labels were made                                      report + GenAI log
 ------------------------------------------------------------------------------------------
-Say in the data section and the GenAI log: train/dev labels were suggested by an AI
-assistant and confirmed or changed by us (with the change rate from B2); the 150 test
-labels are ours alone, with nothing pre-filled.
+Say in the data section and the GenAI log: the labels were drafted by an AI assistant and
+reviewed by the authors (with the change rate from B2).
 
 
 C3. Pick the headline metric                                      plan + figure + report

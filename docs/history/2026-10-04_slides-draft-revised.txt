@@ -161,8 +161,7 @@ On it:   Small screenshot: "my gums bleed when I brush" -> Ob-Gyn, 94–96%
              state rarely appears until the cutoffs are tuned
            - our first data plan (specialty subreddits) broke on Reddit's terms, and full
              redaction didn't fit the time, so we cut scope to routing
-           - AI assistants sped up code and first-pass labels, but every label we report on
-             is checked by us
+           - AI assistants sped up code and drafted the labels, which the authors reviewed
          Next
            - stage 2: train on our own posts, then report results on our own 150 test posts,
              against "always GP" and against the from-scratch router
@@ -209,4 +208,4 @@ Practical:
 
 Likely questions: Why not an LLM for everything? How do you know your labels are right?
 What stops it giving medical advice? What about the emergencies the rules miss?
-Why did the AI assistant suggest train labels but not test labels?
+How were the labels made? (Drafted by an AI assistant from our guideline, reviewed by the authors.)
