@@ -8,7 +8,7 @@ A specialist router. Describe a health concern in plain language and get told wh
 |---|---|
 | Team | Akshara (`akshara-ns`) and Sohum (`ssg1`) |
 | Deadlines | Presentation 5 Oct 2026; code and report 8 Oct 2026 |
-| GUI | Gradio app, run from a Colab notebook that prints a public link and QR code (Gradio Spaces on Hugging Face now need a paid plan). Code and models: `ssg1/doc-compass` on Hugging Face |
+| GUI | Gradio app, run from a Colab notebook that prints a public link and QR code (Gradio Spaces on Hugging Face now need a paid plan). Code and models: `akshara-ns/doc-compass` on Hugging Face (stage 2, 8 Oct; `ssg1/doc-compass` holds the earlier stage-1 bundle) |
 | Model types | All three: from scratch, fine-tuned, off-the-shelf (the brief asks for at least two) |
 | Focus | Routing. Redaction is out of scope for now: we assume users type relevant, non-identifying text. A simple rule-based scrub may be added for completeness, and full redaction later if time allows |
 | Labelled data | 734 posts labelled; 527 usable for routing (362 train / 50 dev / 115 test), 54 Emergency, 153 Skip. Labels drafted by an AI assistant from the guideline and reviewed by the authors (8 Oct) |
@@ -39,7 +39,7 @@ Current figure: `docs/checkin/checkin_figure_v3.png` (4 Oct). The 27 Sep check-i
   The intervals overlap, so the three are tied on public data. The comments are short and alike, so this is an easy score; our own 150 test posts are the real test.
 - **Explanation:** Qwen2.5-1.5B-Instruct writes one sentence in a fixed pattern plus three questions. Its text is checked before it is shown, and fixed wording is the fallback.
 - **Labelling:** the 734 posts to label are chosen (`data/manual/pool.ids.csv`) and the labelling tool is ready (`tools/annotate.py`).
-- **Published:** the code and stage-1 routers are in a public Hugging Face repo, `ssg1/doc-compass`, which the notebook downloads.
+- **Published:** the code and stage-1 routers went to `ssg1/doc-compass` on 4 Oct; the stage-2 bundle (BiomedBERT trained on our posts, with the TF-IDF fallback) is at `akshara-ns/doc-compass` since 8 Oct, and the notebook is pinned to it.
 
 **What stage 1 showed**
 
@@ -219,7 +219,7 @@ Checked on 27 Sep 2026 against the Hugging Face API, dataset files, papers and l
 - [x] Review the labels (reviewed by the authors; not in the tool, no double-labelling)
 - [x] Merge script with Cohen's κ, agreed labels and the train / dev / test splits (`scripts/merge_labels.py`)
 - [x] Stage 2: all three routers on our 362 training posts; cutoffs tuned on dev (TAU 0.25, MARGIN 0.05)
-- [ ] Republish the bundle with the stage-2 routers
+- [x] Republish the bundle with the stage-2 routers (`akshara-ns/doc-compass`, revision `3c47409`)
 
 ### 7 Oct · Evaluate
 - [x] Routing on the 115-post test split: top-1, top-3, macro-F1, exact intervals, clear vs ambiguous, vs "always GP"
@@ -230,7 +230,7 @@ Checked on 27 Sep 2026 against the Hugging Face API, dataset files, papers and l
 
 ### 8 Oct · Ship and write
 - [ ] Final app: disclaimer, "Start with a GP" always visible, made-up examples only, no input retained
-- [ ] Data card (sources, licences, Reddit terms, labels + ids instead of text); update the model card with stage-2 results
+- [x] Data card (`docs/data-card.md`); model card updated with stage-2 results
 - [ ] Report: need, measurement approach, κ, results, ablation, what we dropped and why, GenAI reflection
 
 ---
