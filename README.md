@@ -84,7 +84,15 @@ The routers must be trained first; the commands are in [docs/routing-results.md]
 
 ## Documentation
 
-The `docs/` folder holds the detail behind this README. [`data-card.md`](docs/data-card.md) describes the data: where the posts come from, how they were chosen and labelled, licences, known problems and privacy. [`label-set.md`](docs/label-set.md) defines the 12 labels and how the public data maps onto them, and [`labelling.md`](docs/labelling.md) covers the labelling process and the 22 emergency warning signs. [`routing-results.md`](docs/routing-results.md) has every router on dev and test, the cutoff tuning and per-label scores; [`emergency-check-results.md`](docs/emergency-check-results.md) has the emergency check's misses and false alarms on real and written cases. [`plan.md`](docs/plan.md) records the project plan and decisions, and [`system-figure.png`](docs/system-figure.png) shows the whole system.
+The `docs/` folder holds the detail behind this README:
+
+- [`data-card.md`](docs/data-card.md): where the posts come from, how they were chosen and labelled, licences, known problems and privacy
+- [`label-set.md`](docs/label-set.md): the 12 labels and how the public data maps onto them
+- [`labelling.md`](docs/labelling.md): the labelling process and the 22 emergency warning signs
+- [`routing-results.md`](docs/routing-results.md): every router on dev and test, the cutoff tuning and per-label scores
+- [`emergency-check-results.md`](docs/emergency-check-results.md): the emergency check's misses and false alarms on real and written cases
+- [`plan.md`](docs/plan.md): the project plan and decisions
+- [`system-figure.png`](docs/system-figure.png): the whole system in one figure
 
 ## Data rules
 
