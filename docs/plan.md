@@ -17,7 +17,7 @@ A specialist router. Describe a health concern in plain language and get told wh
 | Annotation | AI-drafted, then reviewed by the authors. No Cohen's κ. The review tool and merge script are ready for a recorded review (`docs/labelling.md`) |
 | Completion estimate | ≈ 65% with this scope (the v1 scope was ≈ 25% in one week) |
 
-System figure: `docs/system-figure.png` (4 Oct). Label set and public-data mapping: `docs/label-set.md`.
+System figure: `docs/system-figure.png` (9 Oct, with the stage-2 results). Label set and public-data mapping: `docs/label-set.md`.
 
 ---
 
