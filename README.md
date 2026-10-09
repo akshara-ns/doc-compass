@@ -34,7 +34,7 @@ On 115 of our own test posts, scored once. Labels were drafted by an AI assistan
 
 | Router | Type | Top-1 (95% CI) | Top-3 | Macro-F1 |
 |---|---|---|---|---|
-| Always "Start with a GP" | baseline | 40.9% (31.8–50.4) | 53.0% | 0.048 |
+| Always "Start with a GP" | baseline | 40.9% (31.8–50.4) | – | 0.048 |
 | TF-IDF + logistic regression | from scratch | 48.7% (39.3–58.2) | 84.3% | 0.428 |
 | DistilRoBERTa | fine-tuned | 59.1% (49.6–68.2) | 91.3% | 0.523 |
 | **BiomedBERT (shipped)** | fine-tuned | **60.9% (51.3–69.8)** | **90.4%** | **0.611** |
@@ -42,6 +42,8 @@ On 115 of our own test posts, scored once. Labels were drafted by an AI assistan
 The emergency check (rules plus Qwen) misses 13 of 38 emergencies in real posts and flags 20% of ordinary ones: it catches clearly stated warning signs, it does not detect emergencies.
 
 Details: [routing results](docs/routing-results.md) · [emergency check](docs/emergency-check-results.md) · [data card](docs/data-card.md)
+
+**Models and data:** router and app code at [`akshara-ns/doc-compass`](https://huggingface.co/akshara-ns/doc-compass) · labels (ids only), splits and EDA at [`akshara-ns/doc-compass-labels`](https://huggingface.co/datasets/akshara-ns/doc-compass-labels)
 
 ## To run the app
 
@@ -87,3 +89,10 @@ The routers must be trained first; the commands are in [docs/routing-results.md]
 - Never commit post text: labelled data is shared as post ids and labels only.
 - Keep public and synthetic data apart from our labels.
 - Keep API keys and tokens out of the repo.
+
+## How we used AI tools
+
+- **Claude Code** helped check the plan against the real datasets, write and debug the code, build the slides and figures, and draft the docs. **Gemini** was used early on to brainstorm.
+- **Labels:** an AI assistant drafted the labels from our written guideline, and the authors reviewed them.
+- **Checks:** every number in the docs comes from a run of the scripts in this repo, and the core app logic (rules, pipeline, label merging) is covered by tests (`pytest`).
+- **In the app itself**, Qwen2.5-1.5B-Instruct writes the explanations and double-checks for emergencies; it never chooses the doctor.
