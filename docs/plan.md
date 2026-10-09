@@ -229,7 +229,7 @@ Checked on 27 Sep 2026 against the Hugging Face API, dataset files, papers and l
 - [ ] ~~Cohen's κ~~ not computed; error analysis
 
 ### 8 Oct · Ship and write
-- [ ] Final app: disclaimer, "Start with a GP" always visible, made-up examples only, no input retained
+- [x] Final app: disclaimer, "Start with a GP" always visible, made-up examples only, no input retained (checked on the live Colab app, 8 Oct)
 - [x] Data card (`docs/data-card.md`); model card updated with stage-2 results
 - [ ] Report: need, measurement approach, κ, results, ablation, what we dropped and why, GenAI reflection
 
