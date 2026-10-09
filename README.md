@@ -41,7 +41,6 @@ On 115 of our own test posts, scored once. Labels were drafted by an AI assistan
 
 The emergency check (rules plus Qwen) misses 13 of 38 emergencies in real posts and flags 20% of ordinary ones: it catches clearly stated warning signs, it does not detect emergencies.
 
-Details: [routing results](docs/routing-results.md) · [emergency check](docs/emergency-check-results.md) · [data card](docs/data-card.md)
 
 **Models and data:** router and app code at [`akshara-ns/doc-compass`](https://huggingface.co/akshara-ns/doc-compass) · labels (ids only), splits and EDA at [`akshara-ns/doc-compass-labels`](https://huggingface.co/datasets/akshara-ns/doc-compass-labels)
 
@@ -81,7 +80,11 @@ The routers must be trained first; the commands are in [docs/routing-results.md]
 | `doccompass/` | the app: rules, routers, pipeline, Gradio interface |
 | `scripts/` | data prep, training, evaluation, publishing |
 | `tools/annotate.py` | the labelling tool (see `docs/labelling.md`) |
-| `docs/` | the plan, results, data card, label set, labelling guide and system figure |
+| `docs/` | detailed documentation (see below) |
+
+## Documentation
+
+The `docs/` folder holds the detail behind this README. [`data-card.md`](docs/data-card.md) describes the data: where the posts come from, how they were chosen and labelled, licences, known problems and privacy. [`label-set.md`](docs/label-set.md) defines the 12 labels and how the public data maps onto them, and [`labelling.md`](docs/labelling.md) covers the labelling process and the 22 emergency warning signs. [`routing-results.md`](docs/routing-results.md) has every router on dev and test, the cutoff tuning and per-label scores; [`emergency-check-results.md`](docs/emergency-check-results.md) has the emergency check's misses and false alarms on real and written cases. [`plan.md`](docs/plan.md) records the project plan and decisions, and [`system-figure.png`](docs/system-figure.png) shows the whole system.
 
 ## Data rules
 
